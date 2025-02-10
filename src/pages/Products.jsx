@@ -58,9 +58,11 @@ const Products = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div style={{ padding: "20px", margin: "auto", width: "90%" }}>
      
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px",marginTop:"50px" }}>
           {/* ==================================search and felter result =============================*/}
           <Search
             placeholder="Search products"
@@ -69,7 +71,7 @@ const Products = () => {
             loading={searchQuery!=""&&true}
             value={searchQuery}  
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ flex: "1", minWidth: "200px" }}
+            style={{ flex: "1", minWidth: "200px", }}
           />
            <Select
             placeholder="Select Category"
@@ -133,6 +135,7 @@ const Products = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 

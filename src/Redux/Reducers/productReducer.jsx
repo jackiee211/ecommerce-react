@@ -12,4 +12,5 @@ const productReducer = (state = inatialState, action) => {
             }
         default:
             return state
-    }};export default productReducer
+    }};
+    export default productReducer

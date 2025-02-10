@@ -4,6 +4,7 @@ import ProductCard from "../componante/ProductCard";
 import { Col, Pagination, Row, Select, Spin, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../Redux/Actions/ProductAction";
+import Navbar from "../componante/Navbar";
 
 const { Search } = Input;
 const { Option } = Select;

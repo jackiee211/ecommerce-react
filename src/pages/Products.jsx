@@ -19,14 +19,7 @@ const Products = () => {
   const products = useSelector((state) => state.getProductsReducer.products);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const data = await GetAllProductData();
-      dispatch(getProducts(data));
-      setLoading(false);
-    };
-    fetchProducts();
-  }, [products]);
+
 
 //=================Category Filter=====================
   let filteredProducts = [...products];
@@ -93,7 +86,7 @@ const Products = () => {
 
         {/* ===========================Product From Redux =======================================*/}
 
-        {loading ? (
+        {products.length === 0 ? (
           <Spin size="large" style={{ display: "block", margin: "50px auto" }} />
         ) : (
           <>

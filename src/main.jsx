@@ -6,7 +6,7 @@ import AppStore from './Redux/store.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Provider store={AppStore} basename="/ecommerce-react">
+    <Provider store={AppStore}>
     <App />
     </Provider>
   </StrictMode>,

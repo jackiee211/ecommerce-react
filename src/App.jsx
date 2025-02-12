@@ -25,7 +25,11 @@ const Routes = createBrowserRouter([
   {path:"productDetails/:id", element:<ProductDetails/>} ,
   {path: "register", element:<RegisterPage/>},
   {path:"login", element:<LoginPage/> }
-])
+],
+{
+  // Set the base path to /ecommerce-react
+  basename: "/ecommerce-react",
+})
 
 
 function App() {

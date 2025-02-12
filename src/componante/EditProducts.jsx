@@ -21,20 +21,16 @@ const EditProductComponent = () => {
 
   const categories = [...new Set(products.map((product) => product.category))];
 
-  // ✅ Handle form submission and update Redux store
   const handleEdit = (values) => {
     const updatedProduct = { ...selectedProduct, ...values };
-
-    // Dispatch the action to update a specific product
     dispatch({ type: "UPDATE_PRODUCT", payload: updatedProduct });
 
     message.success("Product updated successfully!");
-    setIsModalVisible(false); // Close the modal
+    setIsModalVisible(false);
   };
 
   return (
     <>
-      {/* Product List - Click "Edit" Button to Open Modal */}
       <Row gutter={[16, 16]}>
         {products.map((product) => (
           <Col span={6} key={product.id} style={{ marginBottom: "10px" }}>
@@ -86,8 +82,6 @@ const EditProductComponent = () => {
           </Col>
         ))}
       </Row>
-
-      {/* Edit Product Modal */}
       <Modal
         title="Edit Product"
         open={isModalVisible}
@@ -110,6 +104,13 @@ const EditProductComponent = () => {
           </Form.Item>
 
           <Form.Item label="Price" name="price">
+            <InputNumber style={{ width: "100%" }} />
+          </Form.Item>
+
+          <Form.Item label="stock" name="stock">
+            <InputNumber style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item label="discount" name="discountPercentage">
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
 

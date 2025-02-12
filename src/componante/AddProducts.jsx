@@ -18,7 +18,6 @@ import {addProduct} from "../Redux/Actions/AddProduct"
 
 const { TextArea } = Input;
 
-// Normalize file input
 const normFile = (e) => (Array.isArray(e) ? e : e?.fileList);
 
 const AddProductForm = () => {
@@ -98,10 +97,12 @@ const AddProductForm = () => {
                   <InputNumber />
                 </Form.Item>
 
-                <Form.Item label="Discount" name="discount">
-                  <InputNumber />
+                <Form.Item label="stock" name="stock">
+                  <InputNumber style={{ width: "100%" }} />
                 </Form.Item>
-
+                <Form.Item label="discount" name="discountPercentage">
+                  <InputNumber style={{ width: "100%" }} />
+                </Form.Item>
                 <Form.Item label="Description" name="description">
                   <TextArea rows={4} />
                 </Form.Item>

@@ -1,61 +1,102 @@
 import React from "react";
 import { Menu, Button } from "antd";
-import { HeartOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import WishlistModal from "./WishList";
-
-const items = [
-  { key: "1", label: "Home", path: "/" },
-  { key: "2", label: "Admin", path: "/admin" },
-];
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  const items = [
+    { key: "home", label: "Home", path: "/" },
+    ...(currentUser?.role === "admin" ? [{ key: "admin", label: "Admin", path: "Admin" }] : []),
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    navigate("/login", { replace: true });
+  };
 
   return (
-    <div
+    <Menu
+      theme="dark"
+      mode="horizontal"
+      selectedKeys={[location.pathname]}
+      onClick={({ key }) => {
+        const item = items.find((i) => i.key === key);
+        if (item) navigate(item.path);
+      }}
       style={{
         display: "flex",
-        alignItems: "center",
         justifyContent: "space-between",
-        background: "#001529",
-        padding: "",
         position: "fixed",
-        top: 0,
         width: "100%",
+        top: 0,
         zIndex: 1000,
+        padding: "0 20px",
       }}
     >
-      {/* Left Side - Menu */}
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        defaultSelectedKeys={["1"]}
-        onClick={({ key }) => {
-          const item = items.find((i) => i.key === key);
-          if (item) navigate(item.path);
-        }}
-        items={items}
-        style={{
-          flex: 1,
-          background: "transparent",
-          borderBottom: "none",
-        }}
-      />
+      {items.map((item) => (
+        <Menu.Item key={item.path}>{item.label}</Menu.Item>
+      ))}
 
-      {/* Right Side - Wishlist Button */}
-      <WishlistModal>
-        <Button
-          type="primary"
-          icon={<HeartOutlined />}
-          style={{
-            marginRight: "15px",
-          }}
-        >
-          Wishlist
-        </Button>
-      </WishlistModal>
-    </div>
+      <div style={{ marginLeft: "auto", paddingRight: "10px" }}>
+        {currentUser ? (
+        <>
+          <span style={{ color: "white", marginRight: "10px" }}>
+            Welcome, {currentUser.name}
+          </span>
+          <Button type="text" danger onClick={handleLogout}
+
+
+            style={{
+              color: "white",
+              fontSize: "16px",
+              transition: "color 0.3s ease-in-out",
+              marginRight: "10px",
+            }}
+            onMouseEnter={(e) => (e.target.style.color = "#1890ff")}
+            onMouseLeave={(e) => (e.target.style.color = "white")}
+          >
+            Logout
+          </Button>
+          </>
+     
+        ) : (
+          <>
+            <Button
+              type="text"
+              style={{
+                color: "white",
+                fontSize: "16px",
+                transition: "color 0.3s ease-in-out",
+                marginRight: "10px",
+              }}
+              onMouseEnter={(e) => (e.target.style.color = "#1890ff")}
+              onMouseLeave={(e) => (e.target.style.color = "white")}
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Button>
+
+            <Button
+              type="text"
+              style={{
+                color: "white",
+                fontSize: "16px",
+                transition: "color 0.3s ease-in-out",
+              }}
+              onMouseEnter={(e) => (e.target.style.color = "#1890ff")}
+              onMouseLeave={(e) => (e.target.style.color = "white")}
+              onClick={() => navigate("/register")}
+            >
+              Register
+            </Button>
+
+          </>
+        )}
+      </div>
+    </Menu>
   );
 };
 

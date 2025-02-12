@@ -107,6 +107,10 @@ const EditProductComponent = () => {
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
 
+          <Form.Item label="stock" name="stock">
+            <InputNumber style={{ width: "100%" }} />
+          </Form.Item>
+
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Update Product

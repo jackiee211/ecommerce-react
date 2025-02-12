@@ -98,8 +98,8 @@ const AddProductForm = () => {
                   <InputNumber />
                 </Form.Item>
 
-                <Form.Item label="Discount" name="discount">
-                  <InputNumber />
+                <Form.Item label="stock" name="stock">
+                  <InputNumber style={{ width: "100%" }} />
                 </Form.Item>
 
                 <Form.Item label="Description" name="description">

@@ -8,6 +8,7 @@ import { Children } from "react"
 import AddProducts from "./componante/AddProducts.jsx"
 import RemoveProducts from "./componante/RemoveProducts.jsx"
 import EditProducts from "./componante/EditProducts.jsx"
+import '@ant-design/v5-patch-for-react-19';
 
 const Routes = createBrowserRouter([
   {path:"/", element:<Products/>},

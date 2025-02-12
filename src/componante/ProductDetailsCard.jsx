@@ -16,7 +16,7 @@ const ProductDetailsCard = ({ product }) => {
       if (product) {
           
        
-          setTotalPrice(discountedPrice * quantity);
+          setTotalPrice(prevTotalPrice=>discountedPrice * quantity);
       }   
   }, [ quantity,discountedPrice]);
 
@@ -60,7 +60,7 @@ const ProductDetailsCard = ({ product }) => {
                     <Text strong style={{ fontSize: "16px" }}>Quantity:</Text>
                     <InputNumber 
                       min={1} 
-                      max={product.stock} 
+                      max={product.stock || 10} 
                       defaultValue={1} 
                       onChange={(value) => setQuantity(value)} 
                       style={{ marginLeft: "10px", width: "70px" }} 

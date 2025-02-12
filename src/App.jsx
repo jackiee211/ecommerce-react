@@ -9,6 +9,9 @@ import AddProducts from "./componante/AddProducts.jsx"
 import RemoveProducts from "./componante/RemoveProducts.jsx"
 import EditProducts from "./componante/EditProducts.jsx"
 import '@ant-design/v5-patch-for-react-19';
+import ProductDetails from "./pages/ProductDetails.jsx"
+import GetAllProductData from "./api/GetAllProductData.jsx"
+import { getProducts } from "./Redux/Actions/ProductAction.jsx"
 
 const Routes = createBrowserRouter([
   {path:"/", element:<Products/>},

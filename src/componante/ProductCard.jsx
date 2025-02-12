@@ -3,11 +3,12 @@
 
 import React from 'react';
 import { Card, Button, Typography } from 'antd';
-
+import { Navigate, useNavigate } from 'react-router-dom';
 const { Meta } = Card;
 const { Text } = Typography;
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate(); 
   return (
     <Card
       hoverable
@@ -47,7 +48,7 @@ const ProductCard = ({ product }) => {
         type="primary"
         block
         style={{ marginTop: "15px", borderRadius: "5px" }}
-        onClick={() => productData(product.id)}
+        onClick={() => navigate(`/productDetails/${product.id}`)}
       >
         View Details
       </Button>

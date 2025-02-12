@@ -6,9 +6,9 @@ import {
   Form,
   Input,
   InputNumber,
+  Popconfirm,
   Row,
   Select,
-  Upload,
   message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,7 +62,9 @@ const AddProductForm = () => {
 
       //!  dispatch action to update Redux state
     
-        dispatch(addProduct(values))
+      dispatch(addProduct(values));
+      messageApi.success("Product added successfully!");
+      form.resetFields();
 
       // })
       // .catch((error) => {
@@ -76,10 +78,10 @@ const AddProductForm = () => {
       {contextHolder}
       <Row justify="center" align="middle" style={{ minHeight: "100vh", padding: "20px" }}>
         <Col sm={8} md={10} lg={12}>
-          <Form form={form} onFinish={onFinish} layout="vertical">
+          <Form form={form} layout="vertical" onFinish={onFinish}>
             <Row justify="center" style={{ minHeight: "100vh" }}>
               <Col sm={24} md={48}>
-                <Form.Item label="Product Name" name="name" rules={[{ required: true, message: "Please enter the product name" }]}>
+                <Form.Item label="Product Name" name="title" rules={[{ required: true, message: "Please enter the product name" }]}>
                   <Input />
                 </Form.Item>
                 <Form.Item label="Select Category" name="category" rules={[{ required: true, message: "Please select a category" }]}>
@@ -103,20 +105,19 @@ const AddProductForm = () => {
                 <Form.Item label="Description" name="description">
                   <TextArea rows={4} />
                 </Form.Item>
-
-                <Form.Item label="Product Image" name="image" valuePropName="fileList" getValueFromEvent={normFile}>
-                  <Upload action="/upload.do" listType="picture-card">
-                    <button style={{ border: 0, background: "none" }} type="button">
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </button>
-                  </Upload>
-                </Form.Item>
-
                 <Form.Item>
-                  <Button type="primary" htmlType="submit">
+                <Popconfirm
+                  placement="rightBottom"
+                  title="Confirm Product Addition"
+                  description="Are you sure you want to add this product?"
+                  onConfirm={() => form.submit()}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button type="primary">
                     Add Product
                   </Button>
+                </Popconfirm>
                 </Form.Item>
               </Col>
             </Row>

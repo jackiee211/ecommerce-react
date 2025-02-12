@@ -8,9 +8,7 @@ import { Children, useEffect } from "react"
 import AddProducts from "./componante/AddProducts.jsx"
 import RemoveProducts from "./componante/RemoveProducts.jsx"
 import EditProducts from "./componante/EditProducts.jsx"
-import ProductDetails from './pages/ProductDetails';
-import { getProducts } from "./Redux/Actions/ProductAction.jsx"
-import GetAllProductData from "./api/GetAllProductData.jsx"
+import '@ant-design/v5-patch-for-react-19';
 
 const Routes = createBrowserRouter([
   {path:"/", element:<Products/>},

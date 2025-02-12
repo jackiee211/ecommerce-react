@@ -3,6 +3,10 @@ import { ShoppingCartOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 const { Title, Text, Paragraph } = Typography;
 import {  useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+
+
+
 
 const ProductDetailsCard = ({ product }) => {
 
@@ -10,7 +14,26 @@ const ProductDetailsCard = ({ product }) => {
     const [quantity, setQuantity] = useState(1);
     const discountedPrice = product.price - (product.price * product.discountPercentage) / 100;
     const [totalPrice, setTotalPrice] = useState(0);
-  
+    const [wishlist, setWishlist] = useState([]);
+
+    useEffect(() => {
+        const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        setWishlist(savedWishlist);
+      }, []);
+    
+      const isInWishlist = wishlist.some((item) => item.id === product.id);
+    
+      const toggleWishlist = () => {
+        let updatedWishlist;
+        if (isInWishlist) {
+          updatedWishlist = wishlist.filter((item) => item.id !== product.id);
+        } else {
+          updatedWishlist = [...wishlist, product];
+        }
+        setWishlist(updatedWishlist);
+        localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+      };
+
   useEffect(() => {
   
       if (product) {
@@ -70,7 +93,15 @@ const ProductDetailsCard = ({ product }) => {
                     <Title level={3} style={{ color: "#52c41a", margin: 0 }}>Total: ${totalPrice < 0 ? 0 : totalPrice.toFixed(2)}</Title>
                   </Col>
                 </Row>
-        
+                {/* ==========================Wishlist Button =======================================*/}
+                <Button
+                        type="text"
+                        icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
+                        onClick={toggleWishlist}
+                        style={{ marginTop: "10px" }}
+                      >
+                        {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+                      </Button>
                 {/* ==========================Add to Cart Button =======================================*/}
                 <Button
                   type="primary"

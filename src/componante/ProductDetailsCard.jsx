@@ -67,7 +67,7 @@ const ProductDetailsCard = ({ product }) => {
                     />
                   </Col>
                   <Col span={12}>
-                    <Title level={3} style={{ color: "#52c41a", margin: 0 }}>Total: ${totalPrice.toFixed(2)}</Title>
+                    <Title level={3} style={{ color: "#52c41a", margin: 0 }}>Total: ${totalPrice < 0 ? 0 : totalPrice.toFixed(2)}</Title>
                   </Col>
                 </Row>
         

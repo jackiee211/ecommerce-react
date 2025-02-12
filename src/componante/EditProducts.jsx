@@ -110,6 +110,9 @@ const EditProductComponent = () => {
           <Form.Item label="stock" name="stock">
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
+          <Form.Item label="discount" name="discountPercentage">
+            <InputNumber style={{ width: "100%" }} />
+          </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit">

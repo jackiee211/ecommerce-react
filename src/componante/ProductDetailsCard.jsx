@@ -45,7 +45,7 @@ const ProductDetailsCard = ({ product }) => {
         
                 <Row gutter={16} align="middle" style={{ marginBottom: "15px" }}>
                   <Col span={12}>
-                    <Title level={3} style={{ color: "#1890ff", margin: 0 }}>Price: ${discountedPrice.toFixed(2)}</Title>
+                    <Title level={3} style={{ color: "#1890ff", margin: 0 }}>Price: ${product.price.toFixed(2)}</Title>
                   </Col>
                   <Col span={12}>
                     <Title level={3} style={{ color: "red", margin: 0 }}>Discount: {product.discountPercentage}%</Title>

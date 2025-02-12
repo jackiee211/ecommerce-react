@@ -4,17 +4,13 @@ import {
   DeleteOutlined,
   HomeFilled,
   ShopOutlined,
-  UploadOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, theme,Typography } from 'antd';
-import { useNavigate,Outlet } from 'react-router-dom';
-import { useSelector,useDispatch } from 'react-redux';
+import { Layout, Menu, theme, Typography } from 'antd';
+import { useNavigate, Outlet, Navigate } from 'react-router-dom';
 
+const { Header, Content, Footer, Sider } = Layout;
+const { Title } = Typography;
 
-
-const { Header, Content, Footer, Sider} = Layout;
-const {Title} = Typography
 const siderStyle = {
   overflow: 'auto',
   height: '100vh',
@@ -35,7 +31,6 @@ const menuItems = [
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  
   return (
     <Sider style={siderStyle}>
       <Menu
@@ -47,13 +42,19 @@ const Sidebar = () => {
           if (item) navigate(item.path);
         }}
         items={menuItems}
-        />
+      />
     </Sider>
   );
 };
 
 const AdminPanel = () => {
-  
+  const CurrentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  // If no current user or the role is not "admin", redirect to home.
+  if (!CurrentUser || CurrentUser.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -65,11 +66,13 @@ const AdminPanel = () => {
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
           <div style={{ padding: 24, textAlign: 'center', background: colorBgContainer, borderRadius: borderRadiusLG }}>
-          <Title>Admin Panel</Title>
-        <Outlet />
+            <Title>Admin Panel</Title>
+            <Outlet />
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>React App ©{new Date().getFullYear()} ITI Project</Footer>
+        <Footer style={{ textAlign: 'center' }}>
+          React App ©{new Date().getFullYear()} ITI Project
+        </Footer>
       </Layout>
     </Layout>
   );

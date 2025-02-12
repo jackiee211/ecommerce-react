@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Button, Typography } from "antd";
+import { Card, Button, Typography, message } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -9,47 +9,68 @@ const { Text } = Typography;
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const [wishlist, setWishlist] = useState([]);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
-  // Function to load the wishlist from localStorage
+  // Load Wishlist from localStorage
   const loadWishlist = () => {
-    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishlist(savedWishlist);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (currentUser?.wishlist) {
+      setWishlist(currentUser.wishlist);
+      setIsInWishlist(currentUser.wishlist.some((item) => item.id === product.id));
+    } else {
+      setWishlist([]);
+      setIsInWishlist(false);
+    }
   };
 
-  // Load wishlist when component mounts
   useEffect(() => {
     loadWishlist();
 
-    // Listen for changes in localStorage
     const handleStorageChange = () => {
       loadWishlist();
     };
 
     window.addEventListener("storage", handleStorageChange);
-    
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
-  // Check if the product is already in the wishlist
-  const isInWishlist = wishlist.some((item) => item.id === product.id);
+  // Add to Wishlist
+  const addToWishlist = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  // Toggle wishlist status
-  const toggleWishlist = () => {
-    let updatedWishlist;
-
-    if (isInWishlist) {
-      updatedWishlist = wishlist.filter((item) => item.id !== product.id);
-    } else {
-      updatedWishlist = [...wishlist, product];
+    if (!currentUser) {
+      message.error("You must be logged in to add items to the wishlist.");
+      return;
     }
 
-    // Update localStorage (triggers storage event)
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    const updatedWishlist = [...(currentUser.wishlist || []), product];
 
-    // Manually trigger update for current component
+    currentUser.wishlist = updatedWishlist;
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    window.dispatchEvent(new Event("storage"));
+
     setWishlist(updatedWishlist);
+    setIsInWishlist(true);
+    message.success("Added to wishlist!");
+  };
+
+  // Remove from Wishlist
+  const removeFromWishlist = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) return;
+
+    const updatedWishlist = currentUser.wishlist.filter((item) => item.id !== product.id);
+
+    currentUser.wishlist = updatedWishlist;
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    window.dispatchEvent(new Event("storage"));
+
+    setWishlist(updatedWishlist);
+    setIsInWishlist(false);
+    message.success("Removed from wishlist!");
   };
 
   return (
@@ -84,16 +105,27 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Wishlist Button */}
-      <Button
-        type="text"
-        icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
-        onClick={toggleWishlist}
-        style={{ marginTop: "10px" }}
-      >
-        {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-      </Button>
+      {isInWishlist ? (
+        <Button
+          type="text"
+          icon={<HeartFilled style={{ color: "red" }} />}
+          onClick={removeFromWishlist}
+          style={{ marginTop: "10px" }}
+        >
+          Remove from Wishlist
+        </Button>
+      ) : (
+        <Button
+          type="text"
+          icon={<HeartOutlined />}
+          onClick={addToWishlist}
+          style={{ marginTop: "10px" }}
+        >
+          Add to Wishlist
+        </Button>
+      )}
 
-      {/* View Details Button */}
+      {/* View Button */}
       <Button
         type="primary"
         block

@@ -1,71 +1,78 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, List, Typography, message } from "antd";
+import { Modal, List, Button, message } from "antd";
 
-const { Title } = Typography;
-
-const WishlistModal = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const WishlistModal = ({ visible, onClose }) => {
   const [wishlist, setWishlist] = useState([]);
-  const [user, setUser] = useState(null);
 
-  // Load user and wishlist from localStorage
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-      loadWishlist(storedUser.id);
+  // Function to load wishlist
+  const loadWishlist = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (currentUser?.wishlist) {
+      setWishlist(currentUser.wishlist);
+    } else {
+      setWishlist([]);
     }
-  }, []);
-
-  // Load wishlist for the specific user
-  const loadWishlist = (userId) => {
-    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    const userWishlist = savedWishlist.filter((item) => item.userId === userId);
-    setWishlist(userWishlist);
   };
 
-  // Remove an item from the wishlist
-  const removeFromWishlist = (productId) => {
-    const updatedWishlist = wishlist.filter((item) => item.id !== productId);
+  useEffect(() => {
+    if (visible) {
+      loadWishlist();
+    }
+
+    const handleStorageChange = () => {
+      loadWishlist();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [visible]);
+
+  const removeFromWishlist = (itemId) => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) return;
+
+    // Remove item from wishlist
+    const updatedWishlist = currentUser.wishlist.filter(item => item.id !== itemId);
+    currentUser.wishlist = updatedWishlist;
+
+    // Save to localStorage
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+    // Trigger localStorage event to update UI in other components
+    window.dispatchEvent(new Event("storage"));
+
+    // Update state
     setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
     message.success("Item removed from wishlist");
   };
 
   return (
-    <>
-      {/* Button to Open Wishlist */}
-      <Button type="primary" onClick={() => setIsModalVisible(true)}>
-        View Wishlist
-      </Button>
-
-      {/* Wishlist Modal */}
-      <Modal
-        title={`Wishlist for ${user ? user.name : "Guest"}`}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-      >
-        {wishlist.length > 0 ? (
-          <List
-            dataSource={wishlist}
-            renderItem={(item) => (
-              <List.Item
-                actions={[
-                  <Button danger onClick={() => removeFromWishlist(item.id)}>
-                    Remove
-                  </Button>,
-                ]}
-              >
-                <Typography.Text>{item.name}</Typography.Text>
-              </List.Item>
-            )}
-          />
-        ) : (
-          <p>No items in wishlist.</p>
-        )}
-      </Modal>
-    </>
+    <Modal
+      title="Your Wishlist"
+      open={visible}
+      onCancel={onClose}
+      footer={null}
+      destroyOnClose
+    >
+      {wishlist.length === 0 ? (
+        <p>Your wishlist is empty.</p>
+      ) : (
+        <List
+          dataSource={wishlist}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Button danger onClick={() => removeFromWishlist(item.id)}>Remove</Button>
+              ]}
+            >
+              <span>{item.title || "Unknown Product"}</span>
+            </List.Item>
+          )}
+        />
+      )}
+    </Modal>
   );
 };
 

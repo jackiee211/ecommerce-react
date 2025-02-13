@@ -9,26 +9,26 @@ const LoginPage = () => {
     const navigate = useNavigate();
     
     const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    
+
     const onSubmit = (values) => {
         const { email, password } = values;
-        
-        if (email === "admin@gmail.com") {
-            localStorage.setItem('currentUser', JSON.stringify({ email, role: "admin",name:"admin"}));
+
+        if (email === "admin@gmail.com" && password === "admin123") {
+            localStorage.setItem('currentUser', JSON.stringify({ email, role: "admin", name: "Admin", wishlist: [] }));
             navigate('/Admin');
             return;
         }
 
         const foundUser = storedUsers.find(user => user.email === email && user.password === password);
-        const wishlist = {}
+
         if (foundUser) {
-            localStorage.setItem('currentUser', JSON.stringify(foundUser,wishlist));
-            navigate('/',{replace:true});
+            localStorage.setItem('currentUser', JSON.stringify(foundUser));
+            navigate('/', { replace: true });
         } else {
             setErrorMessage("Invalid Email or Password");
         }
     };
-    
+
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f4f4' }}>
             <Card style={{ width: 400, padding: 20, borderRadius: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>

@@ -23,7 +23,8 @@ const RegisterPage = () => {
             id: storedUsers.length + 1, 
             name,
             email,
-            password
+            password,
+            wishlist: []
         };
 
         const updatedUsers = [...storedUsers, newUser];

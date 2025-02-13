@@ -16,7 +16,22 @@ const Navbar = () => {
   ];
 
   const handleLogout = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (currentUser) {
+      
+        users = users.map(user =>
+            user.email === currentUser.email ? currentUser : user
+        );
+
+      
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+
     localStorage.removeItem("currentUser");
+
     navigate("/login", { replace: true });
   };
 

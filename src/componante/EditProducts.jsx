@@ -33,7 +33,7 @@ const EditProductComponent = () => {
     <>
       <Row gutter={[16, 16]}>
         {products.map((product) => (
-          <Col span={6} key={product.id} style={{ marginBottom: "10px" }}>
+          <Col  sm={24} md={12} lg={6} key={product.id} style={{ marginBottom: "10px" }}>
             <Card
               hoverable
               style={{

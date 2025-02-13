@@ -36,7 +36,7 @@ export default function RemoveProduct() {
               <p>No products available.</p>
             ) : (
               products.map((product) => (
-                  <Col span={6} style={{marginBottom:"10px"}} key={product.id}>
+                  <Col sm={24} md={12} lg={6} style={{marginBottom:"10px"}} key={product.id}>
                     <Card
                     hoverable
                     style={{

@@ -1,26 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppstoreOutlined,
   DeleteOutlined,
   HomeFilled,
   ShopOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined
 } from '@ant-design/icons';
-import { Layout, Menu, theme, Typography } from 'antd';
+import { Layout, Menu, Button, Typography, theme } from 'antd';
 import { useNavigate, Outlet, Navigate } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Title } = Typography;
-
-const siderStyle = {
-  overflow: 'auto',
-  height: '100vh',
-  position: 'sticky',
-  insetInlineStart: 0,
-  top: 0,
-  bottom: 0,
-  scrollbarWidth: 'thin',
-  scrollbarGutter: 'stable',
-};
 
 const menuItems = [
   { key: '1', icon: <AppstoreOutlined />, label: 'Add Products', path: 'add-products' },
@@ -29,10 +20,18 @@ const menuItems = [
   { key: '4', icon: <HomeFilled />, label: 'Back To Home', path: '/' },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
+
   return (
-    <Sider style={siderStyle}>
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={setCollapsed}
+      breakpoint="md"
+      width={200}
+      style={{ minHeight: '100vh' }}
+    >
       <Menu
         theme="dark"
         mode="inline"
@@ -49,10 +48,11 @@ const Sidebar = () => {
 
 const AdminPanel = () => {
   const CurrentUser = JSON.parse(localStorage.getItem("currentUser"));
-
   if (!CurrentUser || CurrentUser.role !== "admin") {
     return <Navigate to="/" replace />;
   }
+
+  const [collapsed, setCollapsed] = useState(false);
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -60,9 +60,16 @@ const AdminPanel = () => {
 
   return (
     <Layout hasSider>
-      <Sidebar />
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Header style={{ padding: 0, background: colorBgContainer, display: 'flex', alignItems: 'center', paddingLeft: 16 }}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ fontSize: '16px' }}
+          />
+        </Header>
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
           <div style={{ padding: 24, textAlign: 'center', background: colorBgContainer, borderRadius: borderRadiusLG }}>
             <Title>Admin Panel</Title>

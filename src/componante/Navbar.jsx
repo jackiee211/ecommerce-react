@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Menu, Button, Popconfirm } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
-import { HeartOutlined } from "@ant-design/icons";
+import { HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import WishlistModal from "./WishList";
+import CartModal from "./CartModal";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const items = [
     { key: "home", label: "Home", path: "/" },
@@ -20,13 +22,13 @@ const Navbar = () => {
     let users = JSON.parse(localStorage.getItem("users")) || [];
 
     if (currentUser) {
-      
-        users = users.map(user =>
-            user.email === currentUser.email ? currentUser : user
-        );
 
-      
-        localStorage.setItem("users", JSON.stringify(users));
+      users = users.map(user =>
+        user.email === currentUser.email ? currentUser : user
+      );
+
+
+      localStorage.setItem("users", JSON.stringify(users));
     }
 
 
@@ -82,16 +84,27 @@ const Navbar = () => {
 
             {/* Wishlist Button (Logged In) */}
             <Button
-              type="primary"
+              color="danger"
+              variant="link"
               icon={<HeartOutlined />}
               style={{ marginLeft: "15px" }}
               onClick={() => setIsWishlistOpen(true)}
             >
               Wishlist
             </Button>
+            <Button
+                color="cyan"
+                variant="link"
+                icon={<ShoppingCartOutlined />}
+                style={{ marginRight: "15px" }}
+                onClick={() => setIsCartOpen(true)}
+              >
+                
+              </Button>
 
             {/* Wishlist Modal */}
             <WishlistModal visible={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
+            <CartModal visible={isCartOpen} onClose={()=> setIsCartOpen(false)}/>
           </>
         ) : (
           <>
@@ -99,12 +112,13 @@ const Navbar = () => {
             <Popconfirm
               title="You need to log in to access your wishlist. Do you want to log in now?"
               onConfirm={() => navigate("/login")}
-              onCancel={() => {}}
+              onCancel={() => { }}
               okText="Yes"
               cancelText="No"
             >
               <Button
-                type="primary"
+                color="danger"
+                variant="link"
                 icon={<HeartOutlined />}
                 style={{ marginRight: "15px" }}
               >
@@ -112,6 +126,14 @@ const Navbar = () => {
               </Button>
             </Popconfirm>
 
+              <Button
+                color="danger"
+                variant="link"
+                icon={<ShoppingCartOutlined />}
+                style={{ marginRight: "15px" }}
+              >
+                Cart
+              </Button>
             <Button
               type="text"
               style={{

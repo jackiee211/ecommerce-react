@@ -5,9 +5,7 @@ import { Spin } from "antd";
 import ProductDetailsCard from "../componante/ProductDetailsCard";
 function ProductDetails(){
 const {id} = useParams();
-console.log(id);
 const product = useSelector((state) => state.getProductsReducer.products.find((product) => product.id == Number(id)));
-console.log(product);
 
 
     return(

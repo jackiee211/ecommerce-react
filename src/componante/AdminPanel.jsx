@@ -50,7 +50,6 @@ const Sidebar = () => {
 const AdminPanel = () => {
   const CurrentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  // If no current user or the role is not "admin", redirect to home.
   if (!CurrentUser || CurrentUser.role !== "admin") {
     return <Navigate to="/" replace />;
   }

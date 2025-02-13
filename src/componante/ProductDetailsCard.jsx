@@ -8,28 +8,20 @@ const { Title, Text, Paragraph } = Typography;
 const ProductDetailsCard = ({ product }) => {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
-  const discountedPrice = product.price - (product.price * product.discountPercentage) / 100;
-  const [totalPrice, setTotalPrice] = useState(0);
+  const discountedPrice = product.price - (product.price * (product.discountPercentage || 0)) / 100;
+  const [totalPrice, setTotalPrice] = useState(discountedPrice);
   const [wishlist, setWishlist] = useState([]);
   const [isInWishlist, setIsInWishlist] = useState(false);
-
-  // Function to load the wishlist from the current user in localStorage
-  const loadWishlist = () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (currentUser?.wishlist) {
-      setWishlist(currentUser.wishlist);
-      setIsInWishlist(currentUser.wishlist.some((item) => item.id === product.id));
-    } else {
-      setWishlist([]);
-      setIsInWishlist(false);
-    }
-  };
+  const [cart, setCart] = useState([]);
+  const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
     loadWishlist();
+    loadCart();
 
     const handleStorageChange = () => {
       loadWishlist();
+      loadCart();
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -42,19 +34,33 @@ const ProductDetailsCard = ({ product }) => {
     setTotalPrice(discountedPrice * quantity);
   }, [quantity, discountedPrice]);
 
+  const loadWishlist = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const wishlist = currentUser?.wishlist || [];
+    setWishlist(wishlist);
+    setIsInWishlist(wishlist.some((item) => item.id === product.id));
+  };
+
+  const loadCart = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const cart = currentUser?.cart || [];
+    setCart(cart);
+    setIsInCart(cart.some((item) => item.id === product.id));
+  };
 
   const toggleWishlist = () => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (!currentUser) {
-      message.error("You must be logged in to add items to the wishlist.");
+      message.error("You must be logged in to manage your wishlist.");
       return;
     }
 
-    let updatedWishlist = currentUser.wishlist || [];
+    let updatedWishlist = [...(currentUser.wishlist || [])];
+
     if (isInWishlist) {
       updatedWishlist = updatedWishlist.filter((item) => item.id !== product.id);
     } else {
-      updatedWishlist = [...updatedWishlist, product];
+      updatedWishlist.push(product);
     }
 
     currentUser.wishlist = updatedWishlist;
@@ -64,6 +70,37 @@ const ProductDetailsCard = ({ product }) => {
     setWishlist(updatedWishlist);
     setIsInWishlist(!isInWishlist);
     message.success(isInWishlist ? "Removed from wishlist!" : "Added to wishlist!");
+  };
+
+  const addToCart = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) {
+      message.error("You must be logged in to add items to the cart.");
+      return;
+    }
+
+    const updatedCart = [...(currentUser.cart || []), product];
+    currentUser.cart = updatedCart;
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    window.dispatchEvent(new Event("storage"));
+
+    setCart(updatedCart);
+    setIsInCart(true);
+    message.success("Added to cart!");
+  };
+
+  const removeFromCart = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) return;
+
+    const updatedCart = currentUser.cart.filter((item) => item.id !== product.id);
+    currentUser.cart = updatedCart;
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    window.dispatchEvent(new Event("storage"));
+
+    setCart(updatedCart);
+    setIsInCart(false);
+    message.success("Removed from cart!");
   };
 
   return (
@@ -100,7 +137,7 @@ const ProductDetailsCard = ({ product }) => {
         </Col>
       </Row>
       <Divider />
-      {/* Quantity Selector & Total Price */}
+
       <Row gutter={16} align="middle">
         <Col span={12}>
           <Text strong style={{ fontSize: "16px" }}>Quantity:</Text>
@@ -114,11 +151,11 @@ const ProductDetailsCard = ({ product }) => {
         </Col>
         <Col span={12}>
           <Title level={3} style={{ color: "#52c41a", margin: 0 }}>
-            Total: ${totalPrice < 0 ? 0 : totalPrice.toFixed(2)}
+            Total: ${totalPrice.toFixed(2)}
           </Title>
         </Col>
       </Row>
-      {/* Wishlist Button */}
+
       <Button
         type="text"
         icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
@@ -127,25 +164,45 @@ const ProductDetailsCard = ({ product }) => {
       >
         {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
       </Button>
-      {/* Add to Cart Button */}
-      <Button
-        type="primary"
-        size="large"
-        icon={<ShoppingCartOutlined />}
-        style={{
-          marginTop: "20px",
-          borderRadius: "8px",
-          width: "100%",
-          backgroundColor: "#52c41a",
-          borderColor: "#52c41a",
-          fontSize: "16px",
-          fontWeight: "bold",
-        }}
-        onClick={() => console.log("Added to Cart:", { product, quantity })}
-      >
-        Add to Cart
-      </Button>
-      {/* Back Button */}
+
+      {isInCart ? (
+        <Button
+          type="primary"
+          size="large"
+          icon={<ShoppingCartOutlined />}
+          style={{
+            marginTop: "20px",
+            borderRadius: "8px",
+            width: "100%",
+            backgroundColor: "#52c41a",
+            borderColor: "#52c41a",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
+          onClick={removeFromCart}
+        >
+          Remove From Cart
+        </Button>
+      ) : (
+        <Button
+          type="primary"
+          size="large"
+          icon={<ShoppingCartOutlined />}
+          style={{
+            marginTop: "20px",
+            borderRadius: "8px",
+            width: "100%",
+            backgroundColor: "#52c41a",
+            borderColor: "#52c41a",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
+          onClick={addToCart}
+        >
+          Add to Cart
+        </Button>
+      )}
+
       <Button
         type="default"
         size="large"

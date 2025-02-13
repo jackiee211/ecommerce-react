@@ -24,7 +24,8 @@ const RegisterPage = () => {
             name,
             email,
             password,
-            wishlist: []
+            wishlist: [],
+            cart: []
         };
 
         const updatedUsers = [...storedUsers, newUser];

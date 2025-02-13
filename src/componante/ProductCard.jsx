@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Button, Typography, message } from "antd";
-import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import { HeartOutlined, HeartFilled, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const { Meta } = Card;
@@ -8,69 +8,56 @@ const { Text } = Typography;
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
-  const [wishlist, setWishlist] = useState([]);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
 
-  // Load Wishlist from localStorage
-  const loadWishlist = () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (currentUser?.wishlist) {
-      setWishlist(currentUser.wishlist);
-      setIsInWishlist(currentUser.wishlist.some((item) => item.id === product.id));
-    } else {
-      setWishlist([]);
-      setIsInWishlist(false);
-    }
+  // Load user data once
+  const loadUserData = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+    const wishlist = currentUser.wishlist || [];
+    const cart = currentUser.cart || [];
+
+    setIsInWishlist(wishlist.some((item) => item.id === product.id));
+    setIsInCart(cart.some((item) => item.id === product.id));
   };
 
   useEffect(() => {
-    loadWishlist();
+    loadUserData();
 
     const handleStorageChange = () => {
-      loadWishlist();
+      loadUserData();
     };
 
     window.addEventListener("storage", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  }, [product.id]);
 
-  // Add to Wishlist
-  const addToWishlist = () => {
+  // General function to update localStorage
+  const updateUserData = (key, action) => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
     if (!currentUser) {
-      message.error("You must be logged in to add items to the wishlist.");
+      message.error("You must be logged in to perform this action.");
       return;
     }
 
-    const updatedWishlist = [...(currentUser.wishlist || []), product];
+    let updatedList;
+    if (action === "add") {
+      updatedList = [...(currentUser[key] || []), product];
+    } else {
+      updatedList = currentUser[key].filter((item) => item.id !== product.id);
+    }
 
-    currentUser.wishlist = updatedWishlist;
+    currentUser[key] = updatedList;
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
     window.dispatchEvent(new Event("storage"));
 
-    setWishlist(updatedWishlist);
-    setIsInWishlist(true);
-    message.success("Added to wishlist!");
-  };
+    if (key === "wishlist") setIsInWishlist(action === "add");
+    if (key === "cart") setIsInCart(action === "add");
 
-  // Remove from Wishlist
-  const removeFromWishlist = () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (!currentUser) return;
-
-    const updatedWishlist = currentUser.wishlist.filter((item) => item.id !== product.id);
-
-    currentUser.wishlist = updatedWishlist;
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-    window.dispatchEvent(new Event("storage"));
-
-    setWishlist(updatedWishlist);
-    setIsInWishlist(false);
-    message.success("Removed from wishlist!");
+    message.success(action === "add" ? `Added to ${key}!` : `Removed from ${key}!`);
   };
 
   return (
@@ -105,25 +92,24 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Wishlist Button */}
-      {isInWishlist ? (
-        <Button
-          type="text"
-          icon={<HeartFilled style={{ color: "red" }} />}
-          onClick={removeFromWishlist}
-          style={{ marginTop: "10px" }}
-        >
-          Remove from Wishlist
-        </Button>
-      ) : (
-        <Button
-          type="text"
-          icon={<HeartOutlined />}
-          onClick={addToWishlist}
-          style={{ marginTop: "10px" }}
-        >
-          Add to Wishlist
-        </Button>
-      )}
+      <Button
+        type="text"
+        icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
+        onClick={() => updateUserData("wishlist", isInWishlist ? "remove" : "add")}
+        style={{ marginTop: "10px" }}
+      >
+        {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+      </Button>
+
+      {/* Cart Button */}
+      <Button
+        type="text"
+        icon={<ShoppingCartOutlined style={{ color: isInCart ? "red" : "inherit" }} />}
+        onClick={() => updateUserData("cart", isInCart ? "remove" : "add")}
+        style={{ marginTop: "10px" }}
+      >
+        {isInCart ? "Remove from Cart" : "Add to Cart"}
+      </Button>
 
       {/* View Button */}
       <Button

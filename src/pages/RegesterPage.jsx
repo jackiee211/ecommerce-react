@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Alert, Card, Typography } from 'antd';
+import { Button, Form, Input, Alert, Card, Typography, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../componante/Navbar';
+import SallaFooter from '../componante/footer';
+import LoginHeader from '../componante/loginHeader';
 
 const { Title, Text } = Typography;
 
@@ -39,7 +42,15 @@ const RegisterPage = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f4f4f4' }}>
+        <>
+        <Navbar/>
+        <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', height: '95vh', backgroundColor: '#f4f4f4',paddingLeft: '20px',paddingRight: '20px' }}>
+           
+           {/* Hide LoginHeader on small screens */}
+           <Col xs={0} sm={0} md={12} lg={10} xl={8}>
+                        <LoginHeader />
+                    </Col>
+           
             <Card style={{ width: 400, padding: 20, borderRadius: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
                 <Title level={2} style={{ textAlign: 'center', marginBottom: 20 }}>Register</Title>
 
@@ -97,6 +108,10 @@ const RegisterPage = () => {
                 </Form>
             </Card>
         </div>
+
+        <SallaFooter/>
+        
+        </>
     );
 };
 

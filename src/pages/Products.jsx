@@ -5,6 +5,7 @@ import { Col, Pagination, Row, Select, Spin, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../Redux/Actions/ProductAction";
 import Navbar from "../componante/Navbar";
+import SallaFooter from "../componante/footer";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -128,6 +129,8 @@ const Products = () => {
         </>
       )}
     </div>
+
+    <SallaFooter/>
     </>
   );
 };

@@ -52,7 +52,7 @@ const Navbar = () => {
         }}
       >
         {/* Menu Items (Hidden on Small Screens) */}
-        <div className="menu-items" style={{ display: "flex" }}>
+        <div className="menu-items">
           {items.map(item => (
             <Menu.Item key={item.key}>{item.label}</Menu.Item>
           ))}

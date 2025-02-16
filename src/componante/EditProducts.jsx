@@ -22,11 +22,16 @@ const EditProductComponent = () => {
   const categories = [...new Set(products.map((product) => product.category))];
 
   const handleEdit = (values) => {
-    const updatedProduct = { ...selectedProduct, ...values };
-    dispatch({ type: "UPDATE_PRODUCT", payload: updatedProduct });
+    if (values.title == "" || values.price == -values.price || values.stock == 0 || values.discount == 0 ) {
+      message.error("Product data should be set correctly!!")
+    }else{
+      const updatedProduct = { ...selectedProduct, ...values };
+      dispatch({ type: "UPDATE_PRODUCT", payload: updatedProduct });
+  
+      message.success("Product updated successfully!");
+      setIsModalVisible(false);
 
-    message.success("Product updated successfully!");
-    setIsModalVisible(false);
+    }
   };
 
   return (

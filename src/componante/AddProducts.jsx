@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -12,7 +11,6 @@ import {
   message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import {addProduct} from "../Redux/Actions/AddProduct"
 
 
@@ -28,7 +26,6 @@ const AddProductForm = () => {
   const [status, setStatus] = useState(null);
   const [ productCount ] = [products.length]
 
-  // Show message after status update
   useEffect(() => {
     if (status === "success") {
       messageApi.success("Product added successfully!");

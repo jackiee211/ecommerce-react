@@ -13,7 +13,7 @@ import GetAllProductData from "./api/GetAllProductData.jsx"
 import { getProducts } from "./Redux/Actions/ProductAction.jsx"
 import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegesterPage.jsx"
-
+import '@ant-design/v5-patch-for-react-19';
 const Routes = createBrowserRouter([
   {path:"Admin", element:<AdminPanel/>,children:[
     {path:"add-products", element:<AddProducts/>},

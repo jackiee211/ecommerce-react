@@ -14,6 +14,7 @@ import { getProducts } from "./Redux/Actions/ProductAction.jsx"
 import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegesterPage.jsx"
 import '@ant-design/v5-patch-for-react-19';
+import PageLayout from "./pages/PageLayout.jsx"
 const Routes = createBrowserRouter([
   {path:"Admin", element:<AdminPanel/>,children:[
     {path:"add-products", element:<AddProducts/>},
@@ -21,7 +22,8 @@ const Routes = createBrowserRouter([
     {path:"edit-products", element:<EditProducts/>},
     
   ]},
-  {path:"/", element:<Products/>},
+  {path:"/", element:<PageLayout/>},
+  {path:"/products", element:<Products/>},
   {path:"productDetails/:id", element:<ProductDetails/>} ,
   {path: "register", element:<RegisterPage/>},
   {path:"login", element:<LoginPage/> }

@@ -42,7 +42,26 @@ const AddProductForm = () => {
 
   const onFinish = (values) => {
     console.log(values);
-    
+    if (!values.title || typeof values.title !== "string") {
+          message.error("Product title must be set correctly and be a non-empty string!");
+          return;
+        }
+        if (!isNaN(Number(values.title))) {
+          message.error("Product title cannot be just a number!");
+          return;
+        }
+        if (Number(values.price) <= 0) {
+          message.error("Product price must be greater than zero!");
+          return;
+        }
+        if (Number(values.stock) <= 0) {
+          message.error("Product stock must be greater than zero!");
+          return;
+        }
+        if (Number(values.discount) < 0) {
+          message.error("Product discount cannot be negative!");
+          return;
+        }
     // axios
     //   .post(
     //     "https://dummyjson.com/products/add",

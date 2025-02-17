@@ -54,7 +54,7 @@ const Navbar = () => {
           {currentUser ? (
             <>
               <span style={{ color: "white", marginRight: "10px" }}>
-                Welcome, {currentUser.name}
+                Welcome, <span style={{color:"#1677FF"}}>{currentUser.name} !</span >
               </span>
               <Button type="text" danger onClick={handleLogout} style={{ color: "white", marginRight: "10px" }}>
                 Logout

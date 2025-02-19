@@ -15,50 +15,52 @@ import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegesterPage.jsx"
 import '@ant-design/v5-patch-for-react-19';
 import PageLayout from "./pages/PageLayout.jsx"
-import SallaFooter from "./componante/footer.jsx"
-import Navbar from "./componante/Navbar.jsx"
-const Routes = createBrowserRouter([
 
-  {path:"Admin", element:<AdminPanel/>,children:[
-    {path:"add-products", element:<AddProducts/>},
-    {path:"remove-products", element:<RemoveProducts/>},
-    {path:"edit-products", element:<EditProducts/>},
-    
-  ]},
-  {path:"/", element:<PageLayout/>},
-  {path:"/products", element:<Products/>},
-  {path:"productDetails/:id", element:<ProductDetails/>} ,
-  {path: "register", element:<RegisterPage/>},
-  {path:"login", element:<LoginPage/> }
-],
-// {
-//   basename: "/ecommerce-react"
-// }
-)
-
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <PageLayout />, // ✅ Wraps all child pages except Login & Register
+    children: [
+      { index: true, element: <Products /> }, // ✅ Loads Products on `/`
+      { path: "products", element: <Products /> },
+      { path: "productDetails/:id", element: <ProductDetails /> },
+    ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />, // ❌ No PageLayout
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />, // ❌ No PageLayout
+  },
+  {
+    path: "/admin",
+    element: <AdminPanel />,
+    children: [
+      { path: "add-products", element: <AddProducts /> },
+      { path: "remove-products", element: <RemoveProducts /> },
+      { path: "edit-products", element: <EditProducts /> },
+    ],
+  },
+]);
 
 function App() {
   const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchProducts = async () => {
       const data = await GetAllProductData();
       dispatch(getProducts(data));
-      
     };
     fetchProducts();
   }, []);
 
   return (
-    <>
     <Provider store={AppStore}>
-
-      <RouterProvider router={Routes}>
-       
-      </RouterProvider>
-      <SallaFooter/>
+      <RouterProvider router={router} />
     </Provider>
-    </>
-  )
+  );
 }
 
 export default App;

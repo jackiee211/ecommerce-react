@@ -4,6 +4,7 @@ import { Breadcrumb, Layout, Menu, Button, theme } from 'antd';
 import Navbar from '../componante/Navbar';
 import Products from './Products';
 import HeroAds from '../componante/HeroAds/HeroAds';
+import { Outlet } from 'react-router-dom';
 
 const { Content, Sider } = Layout;
 
@@ -36,51 +37,33 @@ const PageLayout = () => {
     <Layout>
    
       <Layout>
-
-
         <Layout
-          style={{
-            padding: '0 24px 24px',
-          }}
         >
 
 
           <Content
             style={{
-              padding: "100px 20px",
-              margin: 0,
+              margin: '40px 0',
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
+              height:"500px"
             }}
           >
             <HeroAds />
           </Content>
-          <Breadcrumb
-            items={[
-              {
-                title: 'Home',
-              },
-              {
-                title: 'Products',
-              },
-
-            ]}
-            style={{
-              margin: '16px 0',
-            }}
-          />
 
           <Content
             style={{
-              padding: 24,
-              margin: 0,
               minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
+              // background: colorBgContainer,
+              // borderRadius: borderRadiusLG,
+              display:"flex",
+              flexWrap:"wrap",
+              justifyContent:"center"
             }}
           >
             <h1>Navigate Through Our Products!</h1>
-            <Products />
+            <Outlet />
           </Content>
         </Layout>
       </Layout>

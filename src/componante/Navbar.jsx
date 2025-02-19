@@ -113,9 +113,6 @@ const wishlistItems= currentUser?.wishlist || [];
             <Button type="text" danger block onClick={handleLogout}>
               Logout
             </Button>
-            <Button type="text" danger block onClick={handleLogout}>
-              Logout
-            </Button>
           </div>
         ) : (
           <>

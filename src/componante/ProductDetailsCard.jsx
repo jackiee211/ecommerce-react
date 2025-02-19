@@ -101,6 +101,7 @@ const ProductDetailsCard = ({ product }) => {
     setCart(updatedCart);
     setIsInCart(false);
     message.success("Removed from cart!");
+    
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, Button, Drawer } from "antd";
 import { MenuOutlined, HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -8,25 +8,25 @@ import CartModal from "./CartModal";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    setCurrentUser(JSON.parse(localStorage.getItem("currentUser")));
 
+
+  }, [currentUser]);
+
+
+const cardItems= currentUser?.cart || []; 
+const wishlistItems= currentUser?.wishlist || [];
   const items = [
     { key: "home", label: "Home", path: "/" },
     ...(currentUser?.role === "admin" ? [{ key: "admin", label: "Admin", path: "/admin" }] : []),
   ];
 
   const handleLogout = () => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-
-    if (currentUser) {
-      users = users.map(user => (user.email === currentUser.email ? currentUser : user));
-      localStorage.setItem("users", JSON.stringify(users));
-    }
-
     localStorage.removeItem("currentUser");
     navigate("/login", { replace: true });
   };
@@ -36,11 +36,7 @@ const Navbar = () => {
       <Menu
         theme="dark"
         mode="horizontal"
-        selectedKeys={[items.find(item => item.path === location.pathname)?.key]}
-        onClick={({ key }) => {
-          const item = items.find(i => i.key === key);
-          if (item) navigate(item.path);
-        }}
+        selectedKeys={[location.pathname]}
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -51,82 +47,42 @@ const Navbar = () => {
           padding: "0 20px",
         }}
       >
-        {/* Menu Items (Hidden on Small Screens) */}
         <div className="menu-items" style={{ display: "flex" }}>
-          {items.map(item => (
-            <Menu.Item key={item.key}>{item.label}</Menu.Item>
+          {items.map((item) => (
+            <Menu.Item key={item.key} onClick={() => navigate(item.path)}>
+              {item.label}
+            </Menu.Item>
           ))}
+          {currentUser && (
+            <Menu.Item key="logout" onClick={handleLogout}>
+              Logout
+            </Menu.Item>
+          )}
         </div>
 
-        {/* Mobile Menu Button */}
         <Button
           type="text"
           icon={<MenuOutlined />}
           onClick={() => setDrawerOpen(true)}
-          style={{ display: "none", color: "white" }}
           className="menu-toggle"
         />
 
         <div style={{ marginLeft: "auto", paddingRight: "10px", display: "flex", alignItems: "center" }}>
           {currentUser ? (
             <>
-              <span style={{ color: "white", marginRight: "10px" }}>
-                Welcome, {currentUser.name}
-              </span>
-              <Button
-                type="text"
-                danger
-                onClick={handleLogout}
-                style={{ color: "white", fontSize: "16px", marginRight: "10px" }}
-              >
-                Logout
-              </Button>
-
-              {/* Wishlist Button */}
-              <Button
-                type="text"
-                icon={<HeartOutlined />}
-                style={{ color: "white", fontSize: "18px", marginRight: "15px" }}
-                onClick={() => setIsWishlistOpen(true)}
-              />
-
-              {/* Cart Button */}
-              <Button
-                type="text"
-                icon={<ShoppingCartOutlined />}
-                style={{ color: "white", fontSize: "18px", marginRight: "15px" }}
-                onClick={() => setIsCartOpen(true)}
-              />
+              <Button type="text" icon={<HeartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "5px" }} onClick={() => setIsWishlistOpen(true)} />
+              <span style={{ color: "white", fontSize: "16px", marginRight: "15px" }}>{wishlistItems.length}</span>
+              <Button type="text" icon={<ShoppingCartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "5px" }} onClick={() => setIsCartOpen(true)} />
+              <span style={{ color: "white", fontSize: "16px", marginRight: "15px" }}>{cardItems.length}</span>
             </>
           ) : (
             <>
-              <Button
-                type="text"
-                icon={<HeartOutlined />}
-                style={{ color: "white", fontSize: "18px", marginRight: "15px" }}
-                onClick={() => navigate("/login")}
-              />
-
-              <Button
-                type="text"
-                icon={<ShoppingCartOutlined />}
-                style={{ color: "white", fontSize: "18px", marginRight: "15px" }}
-                onClick={() => navigate("/login")}
-              />
-
-              <Button
-                type="text"
-                style={{ color: "white", fontSize: "16px", marginRight: "10px" }}
-                onClick={() => navigate("/login")}
-              >
+              <Button type="text" icon={<HeartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "15px" }} onClick={() => navigate("/login")} />
+              <Button type="text" icon={<ShoppingCartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "15px" }} onClick={() => navigate("/login")} />
+              <Button type="text" style={{ color: "white", fontSize: "16px", marginRight: "10px" }} onClick={() => navigate("/login")}>
                 Login
               </Button>
-
-              <Button
-                type="text"
-                style={{ color: "white", fontSize: "16px" }}
-                onClick={() => navigate("/register")}
-              >
+              <Button type="text" style={{ color: "white", fontSize: "16px" }} onClick={() => navigate("/register")}>
                 Register
               </Button>
             </>
@@ -134,30 +90,16 @@ const Navbar = () => {
         </div>
       </Menu>
 
-      {/* Wishlist Modal */}
-      <WishlistModal visible={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
-      <CartModal visible={isCartOpen} onClose={() => setIsCartOpen(false)} />
-
-      {/* Drawer for Collapsible Menu */}
-      <Drawer
-        title="Menu"
-        placement="right"
-        closable
-        onClose={() => setDrawerOpen(false)}
-        open={drawerOpen}
-      >
-        {items.map(item => (
+      <Drawer title="Menu" placement="right" closable onClose={() => setDrawerOpen(false)} open={drawerOpen}>
+        {items.map((item) => (
           <Button key={item.key} type="text" block onClick={() => navigate(item.path)}>
             {item.label}
           </Button>
         ))}
-
         {currentUser ? (
-          <>
-            <Button type="text" danger block onClick={handleLogout}>
-              Logout
-            </Button>
-          </>
+          <Button type="text" danger block onClick={handleLogout}>
+            Logout
+          </Button>
         ) : (
           <>
             <Button type="text" block onClick={() => navigate("/login")}>
@@ -170,15 +112,19 @@ const Navbar = () => {
         )}
       </Drawer>
 
-      {/* Responsive Styles */}
+      <WishlistModal visible={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
+      <CartModal visible={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
       <style>
         {`
           @media (max-width: 768px) {
             .menu-items {
-              display: none;
+              display: none !important; /* Hide Home, Admin, and Logout on Mobile */
             }
             .menu-toggle {
               display: block !important;
+              color: white;
+              /* Show Mobile Menu Button */
             }
           }
         `}

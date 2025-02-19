@@ -43,7 +43,7 @@ const RegisterPage = () => {
 
     return (
         <>
-        <Navbar/>
+        {/* <Navbar/> */}
         <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', height: '95vh', backgroundColor: '#f4f4f4',paddingLeft: '20px',paddingRight: '20px' }}>
            
            {/* Hide LoginHeader on small screens */}

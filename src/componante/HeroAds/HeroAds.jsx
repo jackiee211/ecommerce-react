@@ -1,12 +1,16 @@
 import React from 'react';
 import { Carousel } from 'antd';
+import ad1 from "../../assets/1.jpg"
+import ad2 from "../../assets/2.jpg"
+import ad3 from "../../assets/3.jpg"
 
 const contentStyle = {
-  height: '160px',
-  color: '#fff',
-  lineHeight: '160px',
-  textAlign: 'center',
-  background: '#364d79',
+  height: '500px',
+  // color: '#fff',
+  // lineHeight: '30rem',
+  // textAlign: 'center',
+  // background: '#364d79',
+  width:"100%"
 };
 const HeroAds = () => (
   <Carousel autoplay={{
@@ -14,16 +18,16 @@ const HeroAds = () => (
   }}
   autoplaySpeed={5000}>
     <div>
-      <h3 style={contentStyle}>80% Black Friday Sales! </h3>
+      <img src={ad1} alt="" style={contentStyle} />
     </div>
     <div>
-      <h3 style={contentStyle}>Discover New Products!</h3>
+    <img src={ad2} alt="" style={contentStyle} />
     </div>
     <div>
-      <h3 style={contentStyle}>Instant Delivery!</h3>
+    <img src={ad3} alt="" style={contentStyle} />
     </div>
     <div>
-      <h3 style={contentStyle}>Chat Support 24/7</h3>
+    <img src={ad1} alt="" style={contentStyle} />
     </div>
   </Carousel>
 );

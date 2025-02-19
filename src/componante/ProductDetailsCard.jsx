@@ -105,7 +105,7 @@ const ProductDetailsCard = ({ product }) => {
 
   return (
 
-     <div style={{  marginTop:"60px" }}>
+
 
     <Card
     hoverable
@@ -268,7 +268,7 @@ const ProductDetailsCard = ({ product }) => {
       </Col>
     </Row>
   </Card>
-      </div>
+  
 
 
   );

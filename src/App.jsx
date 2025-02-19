@@ -15,6 +15,7 @@ import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegesterPage.jsx"
 import '@ant-design/v5-patch-for-react-19';
 import PageLayout from "./pages/PageLayout.jsx"
+import SallaFooter from "./componante/footer.jsx"
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,7 @@ function App() {
   return (
     <Provider store={AppStore}>
       <RouterProvider router={router} />
+      <SallaFooter />
     </Provider>
   );
 }

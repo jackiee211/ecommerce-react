@@ -25,7 +25,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
   return (
     <Sider
-      collapsible
       collapsed={collapsed}
       onCollapse={setCollapsed}
       breakpoint="md"

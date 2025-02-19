@@ -54,8 +54,10 @@ const Products = () => {
   return (
     <>
     <div style={{ padding: "20px", width: "90%" }}>
+    <h1 style={{textAlign:"center",margin:"20px"}}>Navigate Through Our Products!</h1>
+
      
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px",marginTop:"80px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
           {/* ==================================search and felter result =============================*/}
           <Search
             placeholder="Search products"

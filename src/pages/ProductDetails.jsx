@@ -14,7 +14,7 @@ const product = useSelector((state) => state.getProductsReducer.products.find((p
     return(
         <>
         {/* <Navbar/> */}
-        <div style={{ maxWidth: "800px", margin: "40px auto", padding: "20px",  }}>
+        <div style={{ maxWidth: "800px", padding: "20px",  }}>
         {
             product == undefined ? <Spin size="large" style={{ display: "block", margin: "50px auto" }} />
             :

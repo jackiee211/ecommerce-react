@@ -62,7 +62,6 @@ const PageLayout = () => {
               justifyContent:"center"
             }}
           >
-            <h1>Navigate Through Our Products!</h1>
             <Outlet />
           </Content>
         </Layout>

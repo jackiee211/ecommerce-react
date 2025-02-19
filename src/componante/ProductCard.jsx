@@ -92,72 +92,97 @@ const ProductCard = ({ product }) => {
 
   return (
     <Card
-      hoverable
+  hoverable
+  style={{
+    height: "100%",
+    borderRadius: "12px",
+    boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
+    overflow: "hidden",
+    transition: "transform 0.2s, box-shadow 0.2s",
+  }}
+  cover={
+    <img
+      alt={product.title}
+      src={product.thumbnail}
       style={{
-        height: "100%",
-        borderRadius: "10px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-        overflow: "hidden",
+        height: "220px",
+        objectFit: "cover",
+        borderTopLeftRadius: "12px",
+        borderTopRightRadius: "12px",
       }}
-      cover={
-        <img
-          alt={product.title}
-          src={product.thumbnail}
-          style={{
-            height: "180px",
-            objectFit: "cover",
-            borderTopLeftRadius: "10px",
-            borderTopRightRadius: "10px",
-          }}
-        />
-      }
+    />
+  }
+  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
+  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+>
+  <Meta title={product.title} />
+
+  {/* Price & Category */}
+  <div style={{ marginTop: "12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <Text strong style={{ fontSize: "18px", color: "#1890ff" }}>
+      ${product.price}
+    </Text>
+    <Text
+      type="secondary"
+      style={{
+        fontSize: "14px",
+        backgroundColor: "#f0f0f0",
+        padding: "3px 8px",
+        borderRadius: "5px",
+      }}
     >
-      <Meta title={product.title} description={product.description} />
+      {product.category}
+    </Text>
+  </div>
 
-      <div style={{ marginTop: "10px", display: "flex", justifyContent: "space-between" }}>
-        <Text strong style={{ fontSize: "16px", color: "#1890ff" }}>
-          ${product.price}
-        </Text>
-        <Text type="secondary">{product.category}</Text>
-      </div>
+  {/* Action Buttons */}
+  <div style={{ marginTop: "15px" }}>
+    {/* Wishlist Button */}
 
-      {/* Wishlist Button */}
-      <Button
-        type="text"
-        icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
-        onClick={() => updateUserData("wishlist", isInWishlist ? "remove" : "add")}
-        style={{ marginTop: "10px" }}
-      >
-        {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-      </Button>
+    <div style={{display:"flex",justifyContent:"space-around",alignItems:"center",marginBottom:"10px"}}>
 
-      {/* Cart Button */}
-      <Button
-        type="text"
-        icon={<ShoppingCartOutlined style={{ color: isInCart ? "red" : "inherit" }} />}
-        onClick={() => updateUserData("cart", "add")}
-        style={{ marginTop: "10px" }}
-      >
-        {isInCart ? "Add Another" : "Add to Cart"}
-      </Button>
 
-      {/* Display quantity */}
-      {(isInCart || quantity > 0) && (
-        <Text style={{ marginTop: "10px" }}>
-          Quantity: {quantity}
-        </Text>
-      )}
+    <Button
+      shape="circle"
+      icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
+      onClick={() => updateUserData("wishlist", isInWishlist ? "remove" : "add")}
+      style={{
+        borderColor: isInWishlist ? "red" : "gray",
+        color: isInWishlist ? "red" : "gray",
+        transition: "all 0.2s",
+      }}
+    />
 
-      {/* View Button */}
-      <Button
-        type="primary"
-        block
-        style={{ marginTop: "10px", borderRadius: "5px" }}
-        onClick={() => navigate(`/productDetails/${product.id}`)}
-      >
-        View Details
-      </Button>
-    </Card>
+    {/* Cart Button */}
+    <Button
+      shape="circle"
+      icon={<ShoppingCartOutlined style={{ color: isInCart ? "#ff4d4f" : "gray" }} />}
+      onClick={() => updateUserData("cart", isInCart ? "remove" : "add")}
+      style={{
+        borderColor: isInCart ? "#ff4d4f" : "gray",
+        color: isInCart ? "#ff4d4f" : "gray",
+        transition: "all 0.2s",
+      }}
+    />
+    </div>
+
+    {/* View Details Button */}
+    <Button
+      type="primary"
+      style={{
+        borderRadius: "6px",
+        background: "#1890ff",
+        borderColor: "#1890ff",
+        width: "100%",
+        fontWeight: "bold",
+      }}
+      onClick={() => navigate(`/productDetails/${product.id}`)}
+    >
+      View Details
+    </Button>
+  </div>
+</Card>
+
   );
 };
 

@@ -5,6 +5,7 @@ import { Col, Pagination, Row, Select, Spin, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../Redux/Actions/ProductAction";
 import Navbar from "../componante/Navbar";
+import SallaFooter from "../componante/footer";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -52,10 +53,11 @@ const Products = () => {
 
   return (
     <>
-    <Navbar/>
-    <div style={{ padding: "20px", margin: "auto", width: "90%" }}>
+    <div style={{ padding: "20px", width: "90%" }}>
+    <h1 style={{textAlign:"center",margin:"20px"}}>Navigate Through Our Products!</h1>
+
      
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px",marginTop:"80px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px" }}>
           {/* ==================================search and felter result =============================*/}
           <Search
             placeholder="Search products"
@@ -128,6 +130,8 @@ const Products = () => {
         </>
       )}
     </div>
+
+ 
     </>
   );
 };

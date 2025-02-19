@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, Col, Form, Input, InputNumber, Row, Select, message, Typography, Modal } from "antd";
+import { Button, Card, Col, Form, Input, InputNumber, Row, Select, message, Typography, Modal, Pagination } from "antd";
 
 const { Meta } = Card;
 const { Text } = Typography;
@@ -12,6 +12,10 @@ const EditProductComponent = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedProducts = products.slice(startIndex, startIndex + pageSize);
 
   useEffect(() => {
     if (selectedProduct) {
@@ -22,17 +26,39 @@ const EditProductComponent = () => {
   const categories = [...new Set(products.map((product) => product.category))];
 
   const handleEdit = (values) => {
+
+    if (!values.title || typeof values.title !== "string") {
+      message.error("Product title must be set correctly and be a non-empty string!");
+      return;
+    }
+    if (!isNaN(Number(values.title))) {
+      message.error("Product title cannot be just a number!");
+      return;
+    }
+    if (Number(values.price) <= 0) {
+      message.error("Product price must be greater than zero!");
+      return;
+    }
+    if (Number(values.stock) <= 0) {
+      message.error("Product stock must be greater than zero!");
+      return;
+    }
+    if (Number(values.discount) < 0) {
+      message.error("Product discount cannot be negative!");
+      return;
+    }
+    
     const updatedProduct = { ...selectedProduct, ...values };
     dispatch({ type: "UPDATE_PRODUCT", payload: updatedProduct });
-
+    
     message.success("Product updated successfully!");
     setIsModalVisible(false);
   };
-
+  
   return (
     <>
       <Row gutter={[16, 16]}>
-        {products.map((product) => (
+        {paginatedProducts.map((product) => (
           <Col  sm={24} md={12} lg={6} key={product.id} style={{ marginBottom: "10px" }}>
             <Card
               hoverable
@@ -82,6 +108,20 @@ const EditProductComponent = () => {
           </Col>
         ))}
       </Row>
+      <Pagination
+        align="center"
+        style={{ marginTop: "20px" }}
+        current={currentPage}
+        pageSize={pageSize}
+        total={products.length}
+        onChange={(page, size) => {
+          setCurrentPage(page);
+          setPageSize(size);
+        }}
+        showSizeChanger
+        pageSizeOptions={["10", "20", "30"]}
+      />
+
       <Modal
         title="Edit Product"
         open={isModalVisible}
@@ -108,10 +148,10 @@ const EditProductComponent = () => {
           </Form.Item>
 
           <Form.Item label="stock" name="stock">
-            <InputNumber style={{ width: "100%" }} />
+            <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item label="discount" name="discountPercentage">
-            <InputNumber style={{ width: "100%" }} />
+            <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
 
           <Form.Item>

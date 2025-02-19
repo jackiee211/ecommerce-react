@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -12,7 +11,6 @@ import {
   message,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import {addProduct} from "../Redux/Actions/AddProduct"
 
 
@@ -27,19 +25,43 @@ const AddProductForm = () => {
   const [form] = Form.useForm();
   const [status, setStatus] = useState(null);
   const [ productCount ] = [products.length]
+  const success = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'Product Added Successfully',
+    });
+  };
 
-  // Show message after status update
-  useEffect(() => {
-    if (status === "success") {
-      messageApi.success("Product added successfully!");
-    } else if (status === "error") {
-      messageApi.error("Error adding product.");
-    }
-  }, [status]);
+  const error = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'This is an error message',
+    });
+  };
+
 
   const onFinish = (values) => {
     console.log(values);
-    
+    if (!values.title || typeof values.title !== "string") {
+          message.error("Product title must be set correctly and be a non-empty string!");
+          return;
+        }
+        if (!isNaN(Number(values.title))) {
+          message.error("Product title cannot be just a number!");
+          return;
+        }
+        if (Number(values.price) <= 0) {
+          message.error("Product price must be greater than zero!");
+          return;
+        }
+        if (Number(values.stock) <= 0) {
+          message.error("Product stock must be greater than zero!");
+          return;
+        }
+        if (Number(values.discount) < 0) {
+          message.error("Product discount cannot be negative!");
+          return;
+        }
     // axios
     //   .post(
     //     "https://dummyjson.com/products/add",
@@ -60,9 +82,9 @@ const AddProductForm = () => {
     //     console.log("Product added:", response.data);
 
       //!  dispatch action to update Redux state
-    
+
       dispatch(addProduct(values));
-      messageApi.success("Product added successfully!");
+      success()
       form.resetFields();
 
       // })
@@ -71,10 +93,10 @@ const AddProductForm = () => {
       //   console.error("Error adding product:", error);
       // });
   };
-
+  const titleValue = Form.useWatch("title", form);
   return (
     <>
-      {contextHolder}
+    {contextHolder}
       <Row justify="center" align="middle" style={{ minHeight: "100vh", padding: "20px" }}>
         <Col sm={8} md={10} lg={12}>
           <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -94,14 +116,14 @@ const AddProductForm = () => {
                 </Form.Item>
 
                 <Form.Item label="Price" name="price" rules={[{ required: true, message: "Please enter the price" }]}>
-                  <InputNumber />
+                  <InputNumber  min={0}/>
                 </Form.Item>
 
                 <Form.Item label="stock" name="stock">
-                  <InputNumber style={{ width: "100%" }} />
+                  <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item label="discount" name="discountPercentage">
-                  <InputNumber style={{ width: "100%" }} />
+                  <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item label="Description" name="description">
                   <TextArea rows={4} />
@@ -115,7 +137,10 @@ const AddProductForm = () => {
                   okText="Yes"
                   cancelText="No"
                 >
-                  <Button type="primary">
+                  <Button 
+                  type="primary"
+                  disabled={!titleValue || titleValue.trim() === ""}
+                  >
                     Add Product
                   </Button>
                 </Popconfirm>

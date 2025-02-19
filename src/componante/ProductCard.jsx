@@ -10,6 +10,7 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [isInCart, setIsInCart] = useState(false);
+  const [quantity, setQuantity] = useState(0);
 
   // Load user data once
   const loadUserData = () => {
@@ -18,7 +19,14 @@ const ProductCard = ({ product }) => {
     const cart = currentUser.cart || [];
 
     setIsInWishlist(wishlist.some((item) => item.id === product.id));
-    setIsInCart(cart.some((item) => item.id === product.id));
+    const cartItem = cart.find((item) => item.id === product.id);
+    if (cartItem) {
+      setIsInCart(true);
+      setQuantity(cartItem.quantity);
+    } else {
+      setIsInCart(false);
+      setQuantity(0);
+    }
   };
 
   useEffect(() => {
@@ -44,10 +52,32 @@ const ProductCard = ({ product }) => {
     }
 
     let updatedList;
-    if (action === "add") {
-      updatedList = [...(currentUser[key] || []), product];
+    if (key === "cart") {
+      updatedList = currentUser.cart || [];
+      const itemIndex = updatedList.findIndex((item) => item.id === product.id);
+
+      if (action === "add") {
+        if (itemIndex > -1) {
+          updatedList[itemIndex].quantity += 1;
+          setQuantity(updatedList[itemIndex].quantity);
+        } else {
+          updatedList.push({ ...product, quantity: 1 });
+          setQuantity(1);
+        }
+      } else {
+        if (itemIndex > -1) {
+          if (updatedList[itemIndex].quantity > 1) {
+            updatedList[itemIndex].quantity -= 1;
+            setQuantity(updatedList[itemIndex].quantity);
+          } else {
+            updatedList = updatedList.filter((item) => item.id !== product.id);
+            setIsInCart(false);
+            setQuantity(0);
+          }
+        }
+      }
     } else {
-      updatedList = currentUser[key].filter((item) => item.id !== product.id);
+      updatedList = action === "add" ? [...(currentUser[key] || []), product] : currentUser[key].filter((item) => item.id !== product.id);
     }
 
     currentUser[key] = updatedList;
@@ -55,7 +85,7 @@ const ProductCard = ({ product }) => {
     window.dispatchEvent(new Event("storage"));
 
     if (key === "wishlist") setIsInWishlist(action === "add");
-    if (key === "cart") setIsInCart(action === "add");
+    if (key === "cart") setIsInCart(action === "add" && !isInCart);
 
     message.success(action === "add" ? `Added to ${key}!` : `Removed from ${key}!`);
   };
@@ -105,11 +135,18 @@ const ProductCard = ({ product }) => {
       <Button
         type="text"
         icon={<ShoppingCartOutlined style={{ color: isInCart ? "red" : "inherit" }} />}
-        onClick={() => updateUserData("cart", isInCart ? "remove" : "add")}
+        onClick={() => updateUserData("cart", "add")}
         style={{ marginTop: "10px" }}
       >
-        {isInCart ? "Remove from Cart" : "Add to Cart"}
+        {isInCart ? "Add Another" : "Add to Cart"}
       </Button>
+
+      {/* Display quantity */}
+      {(isInCart || quantity > 0) && (
+        <Text style={{ marginTop: "10px" }}>
+          Quantity: {quantity}
+        </Text>
+      )}
 
       {/* View Button */}
       <Button

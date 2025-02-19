@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Modal, List, Button, message } from "antd";
+import { Modal, List, Button, message, Typography } from "antd";
+
+const { Text } = Typography;
 
 const CartModal = ({ visible, onClose }) => {
   const [cart, setCart] = useState([]);
 
-  // Function to load wishlist
+  // Function to load cart
   const loadCart = () => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (currentUser?.cart) {
@@ -29,11 +31,17 @@ const CartModal = ({ visible, onClose }) => {
     };
   }, [visible]);
 
-  const removeFromCart = (itemId) => {
+  const removeOnePiece = (itemId) => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (!currentUser) return;
 
-    const updatedCart = currentUser.cart.filter(item => item.id !== itemId);
+    const updatedCart = currentUser.cart.map(item => {
+      if (item.id === itemId) {
+        return { ...item, quantity: item.quantity - 1 };
+      }
+      return item;
+    }).filter(item => item.quantity > 0);
+
     currentUser.cart = updatedCart;
 
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
@@ -41,7 +49,41 @@ const CartModal = ({ visible, onClose }) => {
     window.dispatchEvent(new Event("storage"));
 
     setCart(updatedCart);
-    message.success("Item removed from Cart");
+    message.success("One piece removed from Cart");
+  };
+
+  const addAnotherPiece = (itemId) => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) return;
+
+    const updatedCart = currentUser.cart.map(item => {
+      if (item.id === itemId) {
+        return { ...item, quantity: item.quantity + 1 };
+      }
+      return item;
+    });
+
+    currentUser.cart = updatedCart;
+
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+    window.dispatchEvent(new Event("storage"));
+
+    setCart(currentUser.cart);
+    message.success("One piece added to Cart");
+  };
+
+  const emptyCart = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) return;
+
+    currentUser.cart = [];
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+    window.dispatchEvent(new Event("storage"));
+
+    setCart([]);
+    message.success("Cart has been emptied");
   };
 
   return (
@@ -49,7 +91,14 @@ const CartModal = ({ visible, onClose }) => {
       title="Your Cart"
       open={visible}
       onCancel={onClose}
-      footer={null}
+      footer={[
+        <Button key="empty" danger onClick={emptyCart}>
+          Empty Cart
+        </Button>,
+        <Button key="close" onClick={onClose}>
+          Close
+        </Button>
+      ]}
       destroyOnClose
     >
       {cart.length === 0 ? (
@@ -60,10 +109,37 @@ const CartModal = ({ visible, onClose }) => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button danger onClick={() => removeFromCart(item.id)}>Remove</Button>
+                <>
+                  <Button danger onClick={() => removeOnePiece(item.id)}>Remove</Button>
+                  <Button onClick={() => addAnotherPiece(item.id)}>Add</Button>
+                </>
               ]}
             >
-              <span>{item.title || "Unknown Product"}</span>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <img
+                  src={item.thumbnail}
+                  alt={item.title}
+                  style={{ width: "50px", height: "50px", marginRight: "10px" }}
+                />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span>{item.title || "Unknown Product"}</span>
+                  <Text style={{ marginTop: "5px" }}>
+                    Quantity: {item.quantity}
+                  </Text>
+                  <Text style={{ marginTop: "5px" }}>
+                    Price Before Taxes: ${Math.round(item.price)}
+                  </Text>
+                  <Text style={{ marginTop: "5px" }}>
+                    Taxes: $15
+                  </Text>
+                  <Text style={{ marginTop: "5px", fontWeight: "bold" }}>
+                    Price After Taxes: ${Math.round(item.price + 15)}
+                  </Text>
+                  <Text style={{ marginTop: "5px", fontWeight: "bold" }}>
+                    Total Price: ${Math.round((item.price + 15) * item.quantity)}
+                  </Text>
+                </div>
+              </div>
             </List.Item>
           )}
         />

@@ -144,6 +144,15 @@ const wishlistItems= currentUser?.wishlist || [];
               /* Show Mobile Menu Button */
             }
           }
+          @media (min-width: 768px) {
+            .menu-items {
+              display: block !important; /* Hide Home, Admin, and Logout on Mobile */
+            }
+            .menu-toggle {
+              display: none !important;
+              
+            }
+          }
         `}
       </style>
     </>

@@ -179,32 +179,7 @@ const ProductDetailsCard = ({ product }) => {
 
         <Divider />
 
-        {/* Quantity & Total Price */}
-        {/* <Row gutter={16} align="middle">
-          <Col>
-            <Text strong style={{ fontSize: "16px" }}>Quantity:</Text>
-            <InputNumber
-              min={1}
-              //================================================================
-              max={product.stock || 10}
-              defaultValue={1}
-              onChange={(value) =>  setTotalPrice(discountedPrice * value)
-
-               
-              }
-              style={{
-                marginLeft: "10px",
-                width: "70px",
-                borderRadius: "5px",
-              }}
-            />
-          </Col>
-          <Col>
-            <Title level={4} style={{ color: "#52c41a", margin: 0 }}>
-              Total: ${product.price.toFixed(2)}
-            </Title>
-          </Col>
-        </Row> */}
+      
 
         {/* Wishlist & Cart Buttons */}
         <div style={{ display: "flex",justifyContent:"space-around", marginTop: "15px" }}>
@@ -229,25 +204,7 @@ const ProductDetailsCard = ({ product }) => {
                 }}
               />
 
-          {/* {isInCart ? (
-           
-          ) : (""
-            // <Button
-            //   type="primary"
-            //   icon={<ShoppingCartOutlined />}
-            //   style={{
-            //     borderRadius: "8px",
-            //     backgroundColor: "#52c41a",
-            //     borderColor: "#52c41a",
-            //     fontSize: "16px",
-            //     fontWeight: "bold",
-            //     flexGrow: 1,
-            //   }}
-            //   onClick={addToCart}
-            // >
-            //   Add to Cart
-            // </Button>
-          )} */}
+       
         </div>
 
         {/* Back Button */}

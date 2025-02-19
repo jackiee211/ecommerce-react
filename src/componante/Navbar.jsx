@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, Button, Drawer } from "antd";
 import { MenuOutlined, HeartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -8,10 +8,28 @@ import CartModal from "./CartModal";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const updateUser = () => {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      setCurrentUser(user);
+    };
+  
+    // Run once when component mounts
+    updateUser();
+  
+    // Listen for storage updates
+    window.addEventListener("storage", updateUser);
+    return () => window.removeEventListener("storage", updateUser);
+  }, []);
+ 
+
+const cardItems= currentUser?.cart || []; 
+const wishlistItems= currentUser?.wishlist || [];
 
   const items = [
     { key: "home", label: "Home", path: "/" },
@@ -30,10 +48,6 @@ const Navbar = () => {
         theme="dark"
         mode="horizontal"
         selectedKeys={[location.pathname]}
-        onClick={({ key }) => {
-          const item = items.find(i => i.key === key);
-          if (item) navigate(item.path);
-        }}
         style={{
           display: "flex",
           alignItems: "center",
@@ -44,72 +58,65 @@ const Navbar = () => {
           zIndex: 1000,
           padding: "0 20px",
         }}
-      >        
-      {items.map(item => (
-          <Menu.Item key={item.key}>{item.label}</Menu.Item>
-        ))}
+      >
+        <div className="menu-items" style={{ display: "flex" }}>
+          {items.map((item) => (
+            <Menu.Item key={item.key} onClick={() => navigate(item.path)}>
+              {item.label}
+            </Menu.Item>
+          ))}
+          {currentUser && (
+            <Menu.Item key="logout" onClick={handleLogout}>
+              Logout
+            </Menu.Item>
+          )}
+        </div>
 
-        {/* Right Side Icons */}
+        <Button
+          type="text"
+          icon={<MenuOutlined />}
+          onClick={() => setDrawerOpen(true)}
+          className="menu-toggle"
+        />
+
         <div style={{ marginLeft: "auto", paddingRight: "10px", display: "flex", alignItems: "center" }}>
           {currentUser ? (
             <>
-              <span style={{ color: "white", marginRight: "10px" }}>
-                Welcome, <span style={{color:"#1677FF"}}>{currentUser.name} !</span >
-              </span>
-              <Button type="text" danger onClick={handleLogout} style={{ color: "white", marginRight: "10px" }}>
-                Logout
-              </Button>
-              <Button type="text" icon={<HeartOutlined />} style={{ color: "white", fontSize: "18px" }} onClick={() => setIsWishlistOpen(true)} />
-              <Button type="text" icon={<ShoppingCartOutlined />} style={{ color: "white", fontSize: "18px" }} onClick={() => setIsCartOpen(true)} />
+              <Button type="text" icon={<HeartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "5px" }} onClick={() => setIsWishlistOpen(true)} />
+              <span style={{ color: "white", fontSize: "16px", marginRight: "15px" }}>{wishlistItems.length}</span>
+              <Button type="text" icon={<ShoppingCartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "5px" }} onClick={() => setIsCartOpen(true)} />
+              <span style={{ color: "white", fontSize: "16px", marginRight: "15px" }}>{cardItems.length}</span>
             </>
           ) : (
             <>
-              <Button type="text" onClick={() => navigate("/login")} style={{ color: "white", marginRight: "10px" }}>
+              <Button type="text" icon={<HeartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "15px" }} onClick={() => navigate("/login")} />
+              <Button type="text" icon={<ShoppingCartOutlined />} style={{ color: "white", fontSize: "18px", marginRight: "15px" }} onClick={() => navigate("/login")} />
+              <Button type="text" style={{ color: "white", fontSize: "16px", marginRight: "10px" }} onClick={() => navigate("/login")}>
                 Login
               </Button>
-              <Button type="text" onClick={() => navigate("/register")} style={{ color: "white" }}>
+              <Button type="text" style={{ color: "white", fontSize: "16px" }} onClick={() => navigate("/register")}>
                 Register
               </Button>
             </>
           )}
         </div>
-
-        {/* Mobile Menu Button */}
-        <Button
-          type="text"
-          icon={<MenuOutlined />}
-          onClick={() => setDrawerOpen(true)}
-          style={{ display: "none", color: "white" }}
-          className="menu-toggle"
-        />
       </Menu>
 
-      {/* Mobile Drawer Menu */}
-      <Drawer
-        title="Menu"
-        placement="right"
-        closable
-        onClose={() => setDrawerOpen(false)}
-        open={drawerOpen}
-      >
-        {items.map(item => (
-          <Button
-            key={item.key}
-            type="text"
-            block
-            onClick={() => {
-              navigate(item.path);
-              setDrawerOpen(false); // Close drawer after click
-            }}
-          >
+      <Drawer title="Menu" placement="right" closable onClose={() => setDrawerOpen(false)} open={drawerOpen}>
+        {items.map((item) => (
+          <Button key={item.key} type="text" block onClick={() => navigate(item.path)}>
             {item.label}
           </Button>
         ))}
-
         {currentUser ? (
-          <Button type="text" danger block onClick={handleLogout}>
-            Logout
-          </Button>
+          <div>
+            <Button type="text" danger block onClick={handleLogout}>
+              Logout
+            </Button>
+            <Button type="text" danger block onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
         ) : (
           <>
             <Button type="text" block onClick={() => navigate("/login")}>
@@ -122,16 +129,19 @@ const Navbar = () => {
         )}
       </Drawer>
 
-      {/* Wishlist & Cart Modals */}
       <WishlistModal visible={isWishlistOpen} onClose={() => setIsWishlistOpen(false)} />
       <CartModal visible={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
-      {/* Responsive Styles */}
       <style>
         {`
           @media (max-width: 768px) {
+            .menu-items {
+              display: none !important; /* Hide Home, Admin, and Logout on Mobile */
+            }
             .menu-toggle {
               display: block !important;
+              color: white;
+              /* Show Mobile Menu Button */
             }
           }
         `}

@@ -32,8 +32,10 @@ const PageLayout = () => {
   } = theme.useToken();
 
   return (
+    <>
+    <Navbar />
     <Layout>
-      <Navbar />
+   
       <Layout>
         <Layout
         >
@@ -59,12 +61,13 @@ const PageLayout = () => {
               flexWrap:"wrap",
               justifyContent:"center"
             }}
-          >y
+          >
             <Outlet />
           </Content>
         </Layout>
       </Layout>
     </Layout>
+    </>
   );
 };
 

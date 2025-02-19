@@ -104,120 +104,173 @@ const ProductDetailsCard = ({ product }) => {
   };
 
   return (
+
+
+
     <Card
-      cover={
+    hoverable
+    style={{
+      borderRadius: "12px",
+      overflow: "hidden",
+      boxShadow: "0px 5px 15px rgba(0,0,0,0.1)",
+      transition: "transform 0.2s, box-shadow 0.2s",
+      padding: "15px",
+    }}
+  >
+    <Row gutter={[16, 16]} align="middle" wrap>
+      {/* Left Side - Image */}
+      <Col xs={24} md={10}>
         <img
           alt={product.title}
           src={product.thumbnail}
           style={{
             width: "100%",
-            height: "400px",
+            height: "300px",
             objectFit: "cover",
-            borderTopLeftRadius: "10px",
-            borderTopRightRadius: "10px",
+            borderRadius: "10px",
+            transition: "transform 0.3s ease-in-out",
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
-      }
-      style={{ borderRadius: "10px", overflow: "hidden", boxShadow: "0px 4px 12px rgba(0,0,0,0.1)" }}
-    >
-      <Title level={2} style={{ color: "#333" }}>{product.title}</Title>
-      <Text type="secondary" style={{ fontSize: "16px" }}>{product.category}</Text>
-      <Divider />
-      <Paragraph style={{ fontSize: "16px", lineHeight: "1.6" }}>{product.description}</Paragraph>
-      <Row gutter={16} align="middle" style={{ marginBottom: "15px" }}>
-        <Col span={12}>
-          <Title level={3} style={{ color: "#1890ff", margin: 0 }}>
-            Price: ${product.price.toFixed(2)}
-          </Title>
-        </Col>
-        <Col span={12}>
-          <Title level={3} style={{ color: "red", margin: 0 }}>
-            Discount: {product.discountPercentage}%
-          </Title>
-        </Col>
-      </Row>
-      <Divider />
+      </Col>
 
-      <Row gutter={16} align="middle">
-        <Col span={12}>
-          <Text strong style={{ fontSize: "16px" }}>Quantity:</Text>
-          <InputNumber
-            min={1}
-            max={product.stock || 10}
-            defaultValue={1}
-            onChange={(value) => setQuantity(value)}
-            style={{ marginLeft: "10px", width: "70px" }}
+      {/* Right Side - Product Info */}
+      <Col xs={24} md={14}>
+        {/* Product Title */}
+        <Title level={3} style={{ color: "#333", marginBottom: "5px" }}>
+          {product.title}
+        </Title>
+
+        {/* Category Label */}
+        <Text
+          type="secondary"
+          style={{
+            display: "inline-block",
+            fontSize: "14px",
+            backgroundColor: "#f5f5f5",
+            padding: "4px 10px",
+            borderRadius: "5px",
+          }}
+        >
+          {product.category}
+        </Text>
+
+        <Divider />
+        {/* Description */}
+        <Paragraph style={{ fontSize: "16px", color: "#555", lineHeight: "1.6" }}>
+          {product.description}
+        </Paragraph>
+
+
+        {/* Price & Discount */}
+        <Row gutter={16} justify="space-between">
+          <Col>
+            <Title level={4} style={{ color: "#1890ff", margin: 0 }}>
+              Price: ${product.price.toFixed(2)}
+            </Title>
+          </Col>
+          <Col>
+            <Title level={4} style={{ color: "red", margin: 0 }}>
+              -{product.discountPercentage}%
+            </Title>
+          </Col>
+        </Row>
+
+        <Divider />
+
+        {/* Quantity & Total Price */}
+        {/* <Row gutter={16} align="middle">
+          <Col>
+            <Text strong style={{ fontSize: "16px" }}>Quantity:</Text>
+            <InputNumber
+              min={1}
+              //================================================================
+              max={product.stock || 10}
+              defaultValue={1}
+              onChange={(value) =>  setTotalPrice(discountedPrice * value)
+
+               
+              }
+              style={{
+                marginLeft: "10px",
+                width: "70px",
+                borderRadius: "5px",
+              }}
+            />
+          </Col>
+          <Col>
+            <Title level={4} style={{ color: "#52c41a", margin: 0 }}>
+              Total: ${product.price.toFixed(2)}
+            </Title>
+          </Col>
+        </Row> */}
+
+        {/* Wishlist & Cart Buttons */}
+        <div style={{ display: "flex",justifyContent:"space-around", marginTop: "15px" }}>
+          <Button
+            shape="circle"
+            icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
+            onClick={toggleWishlist}
+            style={{
+              borderColor: isInWishlist ? "red" : "gray",
+              color: isInWishlist ? "red" : "gray",
+              transition: "all 0.2s",
+            }}
           />
-        </Col>
-        <Col span={12}>
-          <Title level={3} style={{ color: "#52c41a", margin: 0 }}>
-            Total: ${totalPrice.toFixed(2)}
-          </Title>
-        </Col>
-      </Row>
+           <Button
+                shape="circle"
+                icon={<ShoppingCartOutlined style={{ color: isInCart ? "#ff4d4f" : "gray" }} />}
+                onClick={() => (isInCart ? removeFromCart() : addToCart())}
+                style={{
+                  borderColor: isInCart ? "#ff4d4f" : "gray",
+                  color: isInCart ? "#ff4d4f" : "gray",
+                  transition: "all 0.2s",
+                }}
+              />
 
-      <Button
-        type="text"
-        icon={isInWishlist ? <HeartFilled style={{ color: "red" }} /> : <HeartOutlined />}
-        onClick={toggleWishlist}
-        style={{ marginTop: "10px" }}
-      >
-        {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
-      </Button>
+          {/* {isInCart ? (
+           
+          ) : (""
+            // <Button
+            //   type="primary"
+            //   icon={<ShoppingCartOutlined />}
+            //   style={{
+            //     borderRadius: "8px",
+            //     backgroundColor: "#52c41a",
+            //     borderColor: "#52c41a",
+            //     fontSize: "16px",
+            //     fontWeight: "bold",
+            //     flexGrow: 1,
+            //   }}
+            //   onClick={addToCart}
+            // >
+            //   Add to Cart
+            // </Button>
+          )} */}
+        </div>
 
-      {isInCart ? (
+        {/* Back Button */}
         <Button
-          type="primary"
+          type="default"
           size="large"
-          icon={<ShoppingCartOutlined />}
+          icon={<ArrowLeftOutlined />}
           style={{
-            marginTop: "20px",
+            marginTop: "15px",
             borderRadius: "8px",
             width: "100%",
-            backgroundColor: "#52c41a",
-            borderColor: "#52c41a",
             fontSize: "16px",
-            fontWeight: "bold",
           }}
-          onClick={removeFromCart}
+          onClick={() => navigate("/")}
         >
-          Remove From Cart
+          Back to Products
         </Button>
-      ) : (
-        <Button
-          type="primary"
-          size="large"
-          icon={<ShoppingCartOutlined />}
-          style={{
-            marginTop: "20px",
-            borderRadius: "8px",
-            width: "100%",
-            backgroundColor: "#52c41a",
-            borderColor: "#52c41a",
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
-          onClick={addToCart}
-        >
-          Add to Cart
-        </Button>
-      )}
+      </Col>
+    </Row>
+  </Card>
+  
 
-      <Button
-        type="default"
-        size="large"
-        icon={<ArrowLeftOutlined />}
-        style={{
-          marginTop: "10px",
-          borderRadius: "8px",
-          width: "100%",
-          fontSize: "16px",
-        }}
-        onClick={() => navigate("/")}
-      >
-        Back to Products
-      </Button>
-    </Card>
+
   );
 };
 

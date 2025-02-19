@@ -1,7 +1,7 @@
 import Products from "./pages/Products.jsx"
 import "./index.css"
 import AdminPanel from "./componante/AdminPanel.jsx"
-import { createBrowserRouter, RouterProvider} from "react-router-dom"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Provider, useDispatch } from "react-redux"
 import AppStore from "./Redux/store.jsx"
 import { Children, useEffect } from "react"
@@ -15,35 +15,39 @@ import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegesterPage.jsx"
 import '@ant-design/v5-patch-for-react-19';
 import PageLayout from "./pages/PageLayout.jsx"
+import SallaFooter from "./componante/footer.jsx"
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <PageLayout />, // ✅ Wraps all child pages except Login & Register
-    children: [
-      { index: true, element: <Products /> }, // ✅ Loads Products on `/`
-      { path: "products", element: <Products /> },
-      { path: "productDetails/:id", element: <ProductDetails /> },
-    ],
-  },
-  {
-    path: "/login",
-    element: <LoginPage />, // ❌ No PageLayout
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />, // ❌ No PageLayout
-  },
-  {
-    path: "/admin",
-    element: <AdminPanel />,
-    children: [
-      { path: "add-products", element: <AddProducts /> },
-      { path: "remove-products", element: <RemoveProducts /> },
-      { path: "edit-products", element: <EditProducts /> },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <PageLayout />,
+      children: [
+        { index: true, element: <Products /> },
+        { path: "products", element: <Products /> },
+        { path: "productDetails/:id", element: <ProductDetails /> },
+      ],
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/register",
+      element: <RegisterPage />,
+    },
+    {
+      path: "/admin",
+      element: <AdminPanel />,
+      children: [
+        { path: "add-products", element: <AddProducts /> },
+        { path: "remove-products", element: <RemoveProducts /> },
+        { path: "edit-products", element: <EditProducts /> },
+      ],
+    },
+  ],
+  { basename: "/ecommerce-react" }
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -59,6 +63,7 @@ function App() {
   return (
     <Provider store={AppStore}>
       <RouterProvider router={router} />
+      <SallaFooter />
     </Provider>
   );
 }

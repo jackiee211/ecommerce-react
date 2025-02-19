@@ -43,12 +43,14 @@ const wishlistItems= currentUser?.wishlist || [];
 
   return (
     <>
+      {/* Navbar for Large Screens */}
       <Menu
         theme="dark"
         mode="horizontal"
         selectedKeys={[location.pathname]}
         style={{
           display: "flex",
+          alignItems: "center",
           justifyContent: "space-between",
           position: "fixed",
           width: "100%",
@@ -107,9 +109,14 @@ const wishlistItems= currentUser?.wishlist || [];
           </Button>
         ))}
         {currentUser ? (
-          <Button type="text" danger block onClick={handleLogout}>
-            Logout
-          </Button>
+          <div>
+            <Button type="text" danger block onClick={handleLogout}>
+              Logout
+            </Button>
+            <Button type="text" danger block onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
         ) : (
           <>
             <Button type="text" block onClick={() => navigate("/login")}>

@@ -13,15 +13,20 @@ import GetAllProductData from "./api/GetAllProductData.jsx"
 import { getProducts } from "./Redux/Actions/ProductAction.jsx"
 import LoginPage from "./pages/LoginPage.jsx"
 import RegisterPage from "./pages/RegesterPage.jsx"
-
+import '@ant-design/v5-patch-for-react-19';
+import PageLayout from "./pages/PageLayout.jsx"
+import SallaFooter from "./componante/footer.jsx"
+import Navbar from "./componante/Navbar.jsx"
 const Routes = createBrowserRouter([
+
   {path:"Admin", element:<AdminPanel/>,children:[
     {path:"add-products", element:<AddProducts/>},
     {path:"remove-products", element:<RemoveProducts/>},
     {path:"edit-products", element:<EditProducts/>},
     
   ]},
-  {path:"/", element:<Products/>},
+  {path:"/", element:<PageLayout/>},
+  {path:"/products", element:<Products/>},
   {path:"productDetails/:id", element:<ProductDetails/>} ,
   {path: "register", element:<RegisterPage/>},
   {path:"login", element:<LoginPage/> }
@@ -46,9 +51,11 @@ function App() {
   return (
     <>
     <Provider store={AppStore}>
-      <RouterProvider router={Routes}>
-      </RouterProvider>
 
+      <RouterProvider router={Routes}>
+       
+      </RouterProvider>
+      <SallaFooter/>
     </Provider>
     </>
   )

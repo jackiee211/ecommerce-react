@@ -53,8 +53,7 @@ const Products = () => {
 
   return (
     <>
-    <Navbar/>
-    <div style={{ padding: "20px", margin: "auto", width: "90%" }}>
+    <div style={{ padding: "20px", width: "90%" }}>
      
         <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "20px",marginTop:"80px" }}>
           {/* ==================================search and felter result =============================*/}
@@ -130,7 +129,7 @@ const Products = () => {
       )}
     </div>
 
-    <SallaFooter/>
+ 
     </>
   );
 };

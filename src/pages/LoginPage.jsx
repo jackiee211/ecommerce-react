@@ -91,7 +91,7 @@ const LoginPage = () => {
                 </Form>
             </Card>
         </div>
-        <SallaFooter/>
+ 
         </>
     );
 };

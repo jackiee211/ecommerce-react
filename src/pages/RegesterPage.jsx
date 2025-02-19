@@ -108,8 +108,6 @@ const RegisterPage = () => {
                 </Form>
             </Card>
         </div>
-
-        <SallaFooter/>
         
         </>
     );

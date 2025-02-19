@@ -59,8 +59,7 @@ const PageLayout = () => {
               flexWrap:"wrap",
               justifyContent:"center"
             }}
-          >
-            <h1>Navigate Through Our Products!</h1>
+          >y
             <Outlet />
           </Content>
         </Layout>

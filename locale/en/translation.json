@@ -1,0 +1,31 @@
+{
+  "products": {
+    "title": "Products",
+    "description": "Browse our wide range of products.",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "removeProduct": "Remove Product"
+  },
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Submit",
+    "forgotPassword": "Forgot your password?"
+  },
+  "register": {
+    "title": "Register",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Submit"
+  },
+  "adminPanel": {
+    "title": "Admin Panel",
+    "manageProducts": "Manage Products",
+    "addProduct": "Add Product",
+    "removeProduct": "Remove Product",
+    "editProduct": "Edit Product"
+  }
+}

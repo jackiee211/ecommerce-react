@@ -12,15 +12,25 @@ const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+
   useEffect(() => {
-    setCurrentUser(JSON.parse(localStorage.getItem("currentUser")));
-
-
-  }, [currentUser]);
-
+    const updateUser = () => {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      setCurrentUser(user);
+    };
+  
+    // Run once when component mounts
+    updateUser();
+  
+    // Listen for storage updates
+    window.addEventListener("storage", updateUser);
+    return () => window.removeEventListener("storage", updateUser);
+  }, []);
+ 
 
 const cardItems= currentUser?.cart || []; 
 const wishlistItems= currentUser?.wishlist || [];
+
   const items = [
     { key: "home", label: "Home", path: "/" },
     ...(currentUser?.role === "admin" ? [{ key: "admin", label: "Admin", path: "/admin" }] : []),
